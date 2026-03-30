@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONA UVM - App Estudiantil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABLES Y TEMAS --- */
+        :root {
+            --uvmRed: #E30613;
+            --uvmRedHover: #b3040e;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --card-bg: #1A1A1A;
+            --border-color: #333333;
+            --soft-gray: #A0A0A0;
+            --header-bg: rgba(10, 10, 10, 0.85);
+            --transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            --bg-color: #F3F4F6;
+            --text-color: #111827;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            --soft-gray: #6B7280;
+            --header-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- HEADER --- */
+        .glass-header-nav {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            color: var(--uvmRed);
+            transform: translateX(-5px);
+        }
+
+        .header-logo-small {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .header-logo-small span {
+            color: var(--uvmRed);
+        }
+
+        .theme-toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 8px;
+            margin-right: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle-nav:hover {
+            color: var(--uvmRed);
+        }
+
+        /* --- MAPA --- */
+        .main-shape {
+            fill: var(--card-bg);
+            stroke: var(--border-color);
+            stroke-width: 2;
+            transition: var(--transition);
+        }
+        .svg-icon {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            fill: var(--text-color);
+            font-size: 24px;
+        }
+        .map-label {
+            fill: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        .hallway-rect {
+            fill: var(--card-bg);
+            stroke: var(--border-color);
+            stroke-width: 2;
+        }
+        .route-path {
+            fill: none;
+            stroke: var(--uvmRed);
+            stroke-width: 4;
+            stroke-dasharray: 8;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .walker-body {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            fill: var(--uvmRed);
+            font-size: 20px;
+        }
+
+        /* --- CARDS --- */
+        .place-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .place-card.active, .place-card:hover {
+            border-color: var(--uvmRed);
+            transform: translateY(-2px);
+        }
+        .text-readable-main { color: var(--text-color); }
+        .text-readable-muted { color: var(--soft-gray); }
+    </style>
+</head>
+<body>
+
+<header class="glass-header-nav">
+    <div class="nav-container">
+        <!-- Botón de Regreso -->
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            <span class="hidden sm:inline">Volver</span>
+        </a>
+
+        <!-- Identidad de la Página -->
+        <a href="#" class="header-logo-small">
+            ZONA<span>UVM</span>
+        </a>
+
+        <!-- Controles: Theme + Perfil -->
+        <div style="display: flex; align-items: center;">
+            <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+            <div style="width: 32px; height: 32px; background: var(--uvmRed); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Croquis Interactivo -->
+    <div class="lg:col-span-8">
+        <div class="map-container bg-[var(--card-bg)] rounded-3xl p-4 border border-[var(--border-color)]">
+            <svg viewBox="0 0 800 900" class="w-full h-full" id="campus-svg">
+                <!-- Pasillos -->
+                <rect x="150" y="220" width="500" height="40" rx="4" class="hallway-rect" />
+                <rect x="150" y="420" width="500" height="40" rx="4" class="hallway-rect" />
+                <rect x="150" y="620" width="500" height="40" rx="4" class="hallway-rect" />
+
+                <!-- Áreas Verdes -->
+                <rect x="250" y="280" width="300" height="120" rx="20" fill="#22c55e" fill-opacity="0.15" stroke="#16a34a" stroke-width="2" stroke-dasharray="4" />
+                <rect x="250" y="480" width="300" height="120" rx="10" fill="#3b82f6" fill-opacity="0.1" stroke="#2563eb" stroke-width="2" />
+
+                <!-- Rutas -->
+                <path id="route-kingu" class="route-path" d="M 400 80 V 150 H 150" />
+                <path id="route-gugo" class="route-path" d="M 400 80 V 340 H 240" />
+                <path id="route-delishus" class="route-path" d="M 400 80 V 340 H 560" />
+                <path id="route-auditorio" class="route-path" d="M 400 80 V 440 H 140" />
+                <path id="route-labs" class="route-path" d="M 400 80 V 440 H 650" />
+                <path id="route-ingenieria" class="route-path" d="M 400 80 V 640 H 650" />
+                <path id="route-gym" class="route-path" d="M 400 80 V 640 H 140" />
+
+                <!-- Personaje (Walker) -->
+                <g id="walker" style="display: none;">
+                    <text class="walker-body" text-anchor="middle">&#xf554;</text>
+                    <animateMotion id="walker-anim" dur="4s" repeatCount="indefinite" rotate="auto" begin="indefinite" />
+                </g>
+
+                <!-- Etiquetas de Texto -->
+                <text x="400" y="245" text-anchor="middle" class="map-label text-[12px]">Pasillo A</text>
+                <text x="400" y="445" text-anchor="middle" class="map-label text-[12px]">Pasillo B</text>
+                <text x="400" y="645" text-anchor="middle" class="map-label text-[12px]">Pasillo C</text>
+                <text x="400" y="345" text-anchor="middle" class="map-label text-[15px]">Jardín Central</text>
+                <text x="400" y="545" text-anchor="middle" class="map-label text-[15px]">Canchas</text>
+
+                <!-- Glorieta -->
+                <g transform="translate(400, 80)">
+                    <ellipse cx="0" cy="0" rx="110" ry="40" class="main-shape" />
+                    <text y="7" text-anchor="middle" class="map-label text-[16px]">Glorieta</text>
+                </g>
+
+                <!-- Kingu Sushi -->
+                <g class="local-group" id="svg-kingu" onclick="selectItem('kingu')" transform="translate(40, 105)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape shadow-lg" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf521;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[10px]">KINGU SUSHI</text>
+                </g>
+
+                <!-- Gugo -->
+                <g class="local-group" id="svg-gugo" onclick="selectItem('gugo')" transform="translate(130, 300)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape shadow-md" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf2e7;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[10px]">GUGO</text>
+                </g>
+
+                <!-- Delishus -->
+                <g class="local-group" id="svg-delishus" onclick="selectItem('delishus')" transform="translate(560, 300)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape shadow-md" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf06c;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[10px]">DELISHUS</text>
+                </g>
+
+                <!-- Auditorio -->
+                <g class="local-group" id="svg-auditorio" onclick="selectItem('auditorio')" transform="translate(30, 395)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf130;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[9px]">AUDITORIO</text>
+                </g>
+
+                <!-- Laboratorios -->
+                <g class="local-group" id="svg-labs" onclick="selectItem('labs')" transform="translate(660, 395)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf0c3;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[9px]">LABS</text>
+                </g>
+
+                <!-- Ingeniería -->
+                <g class="local-group" id="svg-ingenieria" onclick="selectItem('ingenieria')" transform="translate(660, 595)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf085;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[9px]">INGENIERÍA</text>
+                </g>
+
+                <!-- Gimnasio -->
+                <g class="local-group" id="svg-gym" onclick="selectItem('gym')" transform="translate(30, 595)" style="cursor:pointer;">
+                    <rect width="110" height="95" rx="16" class="main-shape" />
+                    <text x="55" y="48" text-anchor="middle" class="svg-icon">&#xf44b;</text>
+                    <text x="55" y="80" text-anchor="middle" class="map-label text-[9px]">GIMNASIO</text>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Directorio Lateral -->
+    <div class="lg:col-span-4 space-y-4">
+        <h3 class="text-xs font-black text-readable-muted uppercase tracking-widest px-2">Directorio de Sitios</h3>
+        <div class="grid grid-cols-1 gap-3 overflow-y-auto max-h-[550px] pr-2">
+            
+            <div id="card-kingu" onclick="selectItem('kingu')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="fas fa-crown text-2xl text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-black text-sm uppercase text-readable-main">Kingu Sushi</h4>
+                    <p class="text-[11px] text-readable-muted font-bold">Ubicado a lado de la glorieta.</p>
+                </div>
+            </div>
+
+            <div id="card-gugo" onclick="selectItem('gugo')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="fas fa-utensils text-2xl text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-black text-sm uppercase text-readable-main">Gugo</h4>
+                    <p class="text-[11px] text-readable-muted font-bold">Ubicado junto al Jardín Central.</p>
+                </div>
+            </div>
+
+            <div id="card-delishus" onclick="selectItem('delishus')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="fas fa-leaf text-2xl text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-black text-sm uppercase text-readable-main">Delishus</h4>
+                    <p class="text-[11px] text-readable-muted font-bold">Saludable en el Jardín Central.</p>
+                </div>
+            </div>
+            
+            <hr class="border-[var(--border-color)] my-2">
+
+            <div id="card-auditorio" onclick="selectItem('auditorio')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center"><i class="fas fa-microphone text-xl text-slate-500"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm uppercase text-readable-main">Auditorio</h4>
+                    <p class="text-[10px] text-readable-muted">Eventos y conferencias.</p>
+                </div>
+            </div>
+
+            <div id="card-ingenieria" onclick="selectItem('ingenieria')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center"><i class="fas fa-gear text-xl text-slate-500"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm uppercase text-readable-main">Ingeniería</h4>
+                    <p class="text-[10px] text-readable-muted">Talleres de innovación.</p>
+                </div>
+            </div>
+
+            <div id="card-labs" onclick="selectItem('labs')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center"><i class="fas fa-flask text-xl text-slate-500"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm uppercase text-readable-main">Laboratorios</h4>
+                    <p class="text-[10px] text-readable-muted">Prácticas académicas.</p>
+                </div>
+            </div>
+
+            <div id="card-gym" onclick="selectItem('gym')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center"><i class="fas fa-dumbbell text-xl text-slate-500"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm uppercase text-readable-main">Gimnasio</h4>
+                    <p class="text-[10px] text-readable-muted">Entrenamiento Lince.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-box" class="hidden p-6 bg-[var(--card-bg)] rounded-3xl border-l-8 border-red-600 shadow-2xl mt-4 animate-in slide-in-from-right duration-300">
+            <h2 id="info-name" class="text-xl font-black text-red-600 mb-1 italic uppercase">Nombre</h2>
+            <p id="info-desc" class="text-sm text-readable-main leading-relaxed font-bold">Descripción detallada aquí.</p>
+        </div>
+    </div>
+</main>
+
+<script>
+    const placeData = {
+        'kingu': { name: "KINGU SUSHI", desc: "El mejor sushi de UVM GDL Sur. Ubicado a lado de la glorieta, ofrece rollos frescos y especialidades japonesas premium." },
+        'gugo': { name: "GUGO", desc: "Ubicado estratégicamente frente al Jardín Central. Ideal para desayunos rápidos, chilaquiles y snacks entre clases." },
+        'delishus': { name: "DELISHUS", desc: "Tu opción saludable al lado del Jardín Central. Jugos naturales, ensaladas y snacks ligeros para mantener la energía." },
+        'auditorio': { name: "Auditorio Lince", desc: "Espacio principal para conferencias y eventos académicos en el Pasillo B." },
+        'labs': { name: "Laboratorios", desc: "Instalaciones equipadas para experimentación y prácticas técnicas profesionales." },
+        'gym': { name: "Gimnasio", desc: "Ubicado al final del Pasillo C, el área perfecta para el entrenamiento deportivo lince." },
+        'ingenieria': { name: "Ingeniería", desc: "Talleres especializados de innovación y desarrollo tecnológico." }
+    };
+
+    function selectItem(id) {
+        document.querySelectorAll('.route-path').forEach(p => p.style.opacity = '0');
+        document.querySelectorAll('.place-card').forEach(c => c.classList.remove('active'));
+
+        const card = document.getElementById(`card-${id}`);
+        const path = document.getElementById(`route-${id}`);
+        const walker = document.getElementById('walker');
+        const walkerAnim = document.getElementById('walker-anim');
+
+        if (card) card.classList.add('active');
+        if (path) path.style.opacity = '1';
+
+        if (walker && path && walkerAnim) {
+            walker.style.display = 'block';
+            walkerAnim.setAttribute('path', path.getAttribute('d'));
+            walkerAnim.beginElement();
+        }
+
+        if (placeData[id]) {
+            const infoBox = document.getElementById('info-box');
+            document.getElementById('info-name').innerText = placeData[id].name;
+            document.getElementById('info-desc').innerText = placeData[id].desc;
+            infoBox.classList.remove('hidden');
+            if (window.innerWidth < 1024) infoBox.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Lógica del Tema (Oscuro por defecto)
+    const themeBtn = document.getElementById('theme-toggle-nav');
+    themeBtn.onclick = () => {
+        document.body.classList.toggle('light-mode');
+        const icon = themeBtn.querySelector('i');
+        if (document.body.classList.contains('light-mode')) {
+            icon.className = 'fa-solid fa-moon';
+        } else {
+            icon.className = 'fa-solid fa-sun';
+        }
+    };
+</script>
+</body>
+</html>
