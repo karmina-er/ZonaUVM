@@ -113,111 +113,165 @@
 
     <!-- GRID DE SERVICIOS -->
     <main id="servicios" class="max-w-7xl mx-auto px-6 pb-24">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- SECCIÓN 1: VIDA EN CAMPUS (4 Tarjetas Rojas) -->
+        <div class="mb-14">
+            <div class="flex items-center gap-3 mb-8 fade-in">
+                <div class="w-2 h-8 bg-uvmRed rounded-full shadow-[0_0_10px_rgba(227,6,19,0.5)]"></div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide uppercase">Vida en Campus</h2>
+            </div>
             
-            <!-- Tarjeta 1: Chatbot (Local) -->
-            <a href="Chatbot_de_consejos.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.1s;">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-robot text-3xl text-uvmRed"></i>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Tarjeta 1: Chatbot (Local) -->
+                <a href="Chatbot_de_consejos.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.1s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-robot text-3xl text-uvmRed"></i>
+                        </div>
                     </div>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Chatbot de Consejos</h3>
-                <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
-                    Resuelve tus dudas académicas, ubica tus salones y obtén información de trámites al instante con el asistente inteligente.
-                </p>
-                <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                    Abrir Asistente <i class="fa-solid fa-chevron-right ml-2"></i>
-                </div>
-            </a>
-
-            <!-- Tarjeta 2: Mapa Interactivo (Local) -->
-            <a href="mapa.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.2s;">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-map-location-dot text-3xl text-uvmRed"></i>
+                    <h3 class="text-xl font-bold mb-3">Chatbot de Consejos</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Resuelve tus dudas académicas, ubica tus salones y obtén información de trámites al instante con el asistente inteligente.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Abrir Asistente <i class="fa-solid fa-chevron-right ml-2"></i>
                     </div>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Mapa Interactivo</h3>
-                <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
-                    Explora el campus Guadalajara Sur, encuentra cafeterías, laboratorios y traza tu ruta fácilmente por la zona.
-                </p>
-                <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                    Ver Mapa <i class="fa-solid fa-chevron-right ml-2"></i>
-                </div>
-            </a>
+                </a>
 
-            <!-- Tarjeta 3: Menú de Alimentos (Local) -->
-            <a href="menu.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.3s;">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-utensils text-3xl text-uvmRed"></i>
+                <!-- Tarjeta 2: Mapa Interactivo (Local) -->
+                <a href="mapa.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.2s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-map-location-dot text-3xl text-uvmRed"></i>
+                        </div>
                     </div>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Menú de Alimentos</h3>
-                <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
-                    Consulta las opciones de comida disponibles en las cafeterías, precios del día y promociones para estudiantes.
-                </p>
-                <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                    Ver Menú <i class="fa-solid fa-chevron-right ml-2"></i>
-                </div>
-            </a>
-
-            <!-- Tarjeta 4: Blackboard (Externo) -->
-            <a href="https://uvmonline.blackboard.com/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.4s;">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-laptop-code text-3xl text-white"></i>
+                    <h3 class="text-xl font-bold mb-3">Mapa Interactivo</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Explora el campus Guadalajara Sur, encuentra cafeterías, laboratorios y traza tu ruta fácilmente por la zona.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ver Mapa <i class="fa-solid fa-chevron-right ml-2"></i>
                     </div>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Blackboard</h3>
-                <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
-                    Tu aula virtual completa. Entrega tareas, participa en foros y revisa tus materiales de clase 24/7.
-                </p>
-                <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                    Ir a Clase <i class="fa-solid fa-external-link-alt ml-2"></i>
-                </div>
-            </a>
+                </a>
 
-            <!-- Tarjeta 5: Biblioteca (Externo) -->
-            <a href="https://bibliotecas.uvmnet.edu/portico/gui/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.5s;">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-book-bookmark text-3xl text-white"></i>
+                <!-- Tarjeta 3: Menú de Alimentos (Local) -->
+                <a href="menu.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.3s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-utensils text-3xl text-uvmRed"></i>
+                        </div>
                     </div>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Biblioteca Digital</h3>
-                <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
-                    Acceso a bases de datos científicas, libros electrónicos y recursos de investigación para tus proyectos.
-                </p>
-                <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                    Buscar Recursos <i class="fa-solid fa-external-link-alt ml-2"></i>
-                </div>
-            </a>
-
-            <!-- Tarjeta 6: Portal (Externo) -->
-            <a href="https://conexionlince.uvm.mx/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.6s;">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-address-card text-3xl text-white"></i>
+                    <h3 class="text-xl font-bold mb-3">Menú de Alimentos</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Consulta las opciones de comida disponibles en las cafeterías, precios del día y promociones para estudiantes.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ver Menú <i class="fa-solid fa-chevron-right ml-2"></i>
                     </div>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Servicios en Línea</h3>
-                <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
-                    Consulta de calificaciones, historial académico, estados de cuenta y reinscripciones oficiales.
-                </p>
-                <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                    Mi Cuenta <i class="fa-solid fa-external-link-alt ml-2"></i>
-                </div>
-            </a>
+                </a>
 
+                <!-- Tarjeta 4: Mi Horario (Local) -->
+                <a href="horario 5.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.4s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-calendar-days text-3xl text-uvmRed"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Mi Horario</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Revisa tus clases, salones, profesores y horarios de la semana actual de manera rápida y organizada.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Consultar Horario <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+            </div>
         </div>
+
+        <!-- SECCIÓN 2: PLATAFORMAS INSTITUCIONALES (4 Tarjetas Blancas) -->
+        <div>
+            <div class="flex items-center gap-3 mb-8 fade-in" style="animation-delay: 0.4s;">
+                <div class="w-2 h-8 bg-white/80 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.3)]"></div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide uppercase">Plataformas Institucionales</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Tarjeta 5: Directorio de Coordinaciones (Ajustado a estética blanca) -->
+                <a href="directorio.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.5s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-address-book text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Directorio UVM</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Encuentra rápidamente los correos, ubicación de oficinas y contactos de tus coordinadores académicos.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ver Directorio <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 6: Blackboard (Externo) -->
+                <a href="https://uvmonline.blackboard.com/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.6s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-laptop-code text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Blackboard</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Tu plataforma virtual. Entrega tareas, participa en foros y revisa tus materiales de clase 24/7.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ir a mis Tareas <i class="fa-solid fa-external-link-alt ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 7: Biblioteca (Externo) -->
+                <a href="https://bibliotecas.uvmnet.edu/portico/gui/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.7s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-book-bookmark text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Biblioteca Digital</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Acceso a bases de datos científicas, libros electrónicos y recursos de investigación para tus proyectos.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Buscar Recursos <i class="fa-solid fa-external-link-alt ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 8: Portal (Externo) -->
+                <a href="https://conexionlince.uvm.mx/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.8s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-address-card text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Servicios en Línea</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Consulta de calificaciones, historial académico, estados de cuenta y reinscripciones oficiales.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Mi Cuenta <i class="fa-solid fa-external-link-alt ml-2"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
     </main>
 
     <footer class="border-t border-uvmBorder py-12 px-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-uvmGray text-sm">
             <div class="mb-4 md:mb-0">
-                &copy; 2024 ZONA UVM. Campus Guadalajara Sur.
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
             </div>
             <div class="flex space-x-6">
             </div>
@@ -225,4 +279,4 @@
     </footer>
 
 </body>
-</html
+</html>

@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asistente Lince - UVM</title>
     
-    <!-- Fuente Montserrat -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind CSS (CDN) -->
+    <!-- 1. Dependencias Actualizadas -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
+        /* 2. Variables y Estilos CSS Integrados */
         :root {
             --uvmRed: #E30613;
             --uvmDark: #0A0A0A;
@@ -26,7 +36,9 @@
             --text-color: #FFFFFF;
             --card-bg: #1A1A1A;
             --border-color: #333333;
+            --header-bg: rgba(10, 10, 10, 0.85);
             --shadow-custom: 0 10px 40px rgba(0,0,0,0.5);
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
@@ -35,7 +47,7 @@
             --card-bg: #FFFFFF;
             --border-color: #E5E7EB;
             --uvmBorder: #E5E7EB;
-            --soft-gray: #4B5563;
+            --header-bg: rgba(255, 255, 255, 0.85);
             --shadow-custom: 0 10px 40px rgba(0,0,0,0.1);
         }
 
@@ -43,27 +55,28 @@
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: var(--transition);
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
-        /* --- Ajustes de Encabezado --- */
+        /* Estilos del Header Glassmorphism */
         .glass-header-nav {
-            background: var(--card-bg);
+            background: var(--header-bg);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--uvmBorder);
-            width: 100%;
-            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
             z-index: 1000;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            transition: var(--transition);
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -73,15 +86,15 @@
         .back-button {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: var(--text-color);
             text-decoration: none;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s ease;
-            padding: 8px 14px;
+            transition: var(--transition);
+            padding: 8px 16px;
             border-radius: 8px;
             background: rgba(128, 128, 128, 0.1);
         }
@@ -89,13 +102,13 @@
         .back-button:hover {
             background: rgba(227, 6, 19, 0.1);
             color: var(--uvmRed);
-            transform: translateX(-3px);
+            transform: translateX(-5px);
         }
 
         .header-logo-small {
-            font-weight: 900;
-            font-size: 1.1rem;
-            letter-spacing: -0.5px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
             color: var(--text-color);
             text-decoration: none;
         }
@@ -104,12 +117,26 @@
             color: var(--uvmRed);
         }
 
-        /* --- Componentes del Chat --- */
+        .theme-toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 8px;
+            margin-right: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Ajustes del Chat --- */
         .chat-container {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-custom);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: var(--transition);
         }
 
         .chat-header {
@@ -143,12 +170,6 @@
             outline: none;
         }
 
-        #theme-toggle {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-        }
-
         @keyframes slide-in-from-right {
             from { opacity: 0; transform: translateX(20px); }
             to { opacity: 1; transform: translateX(0); }
@@ -158,37 +179,34 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
     </style>
+</head>
+<body class="dark-mode">
 
-    <!-- Header Nav Superior -->
+    <!-- 3. Estructura HTML del Header -->
     <header class="glass-header-nav">
         <div class="nav-container">
-            <!-- Botón de Regreso -->
             <a href="index.html" class="back-button">
                 <i class="fas fa-arrow-left"></i>
                 <span class="hidden sm:inline">Volver</span>
             </a>
 
-            <!-- Identidad de la Página -->
             <a href="#" class="header-logo-small">
                 ZONA<span>UVM</span>
             </a>
 
-            <!-- Controles: Theme + Perfil -->
-            <div class="flex items-center gap-3 sm:gap-4">
-                <button id="theme-toggle-nav" onclick="toggleTheme()" class="theme-toggle-nav shrink-0" title="Cambiar tema">
+            <div style="display: flex; align-items: center;">
+                <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
                     <i class="fa-solid fa-sun"></i>
                 </button>
-                <div class="shrink-0 flex items-center justify-center rounded-full cursor-pointer hover:scale-105 transition-transform shadow-md" style="width: 38px; height: 38px; background: var(--uvmRed);">
-                    <i class="fas fa-user-graduate" style="font-size: 1.1rem; color: white;"></i>
+                <div style="width: 32px; height: 32px; background: var(--uvmRed); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
                 </div>
             </div>
         </div>
     </header>
 
-
-    <main class="flex-1 flex items-center justify-center p-4 lg:p-6 overflow-hidden">
-        <!-- Contenedor Principal del Chat -->
-        <div class="chat-container w-full max-w-3xl h-full max-h-[800px] rounded-2xl flex flex-col overflow-hidden relative">
+    <main class="flex-1 flex items-center justify-center p-4 lg:p-6 my-4">
+        <div class="chat-container w-full max-w-3xl h-[80vh] min-h-[500px] max-h-[800px] rounded-2xl flex flex-col overflow-hidden relative">
             
             <!-- Header del Chat -->
             <header class="chat-header p-5 flex items-center gap-4 shadow-md z-10 shrink-0">
@@ -242,14 +260,34 @@
         </div>
     </main>
 
-    <script>
-        function toggleTheme() {
-            const body = document.body;
-            const btn = document.getElementById('theme-toggle');
-            body.classList.toggle('light-mode');
-            btn.innerHTML = body.classList.contains('light-mode') ? '☀️' : '🌙';
-        }
+    <!-- FOOTER ZONA UVM -->
+    <footer class="border-t border-gray-300 dark:border-uvmBorder py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-uvmGray text-sm font-sans">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+            <div class="flex space-x-6"></div>
+        </div>
+    </footer>
 
+    <!-- 4. Lógica JavaScript de Tema y Mensajería -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const themeBtn = document.getElementById('theme-toggle-nav');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    // Cambia la clase para estilos CSS variables
+                    document.body.classList.toggle('light-mode');
+                    // Cambia la clase para Tailwind (modo oscuro de utilidades)
+                    document.documentElement.classList.toggle('dark');
+                    
+                    const isLightMode = document.body.classList.contains('light-mode');
+                    themeBtn.querySelector('i').className = isLightMode ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                });
+            }
+        });
+
+        // Lógica de Chatbot existente
         function sendMsg() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim().toLowerCase();

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONA UVM - Registro de Horarios</title>
+    
+    <!-- 1. Dependencias -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Configuración de Colores Institucionales ZONA UVM -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              uvmRed: '#E30613',
+              uvmDark: '#0A0A0A',
+              uvmBorder: '#333333',
+              uvmGray: '#A0A0A0'
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        /* 2. Variables y Temas */
+        :root {
+            --uvmRed: #E30613;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --border-color: #333333;
+            --header-bg: rgba(10, 10, 10, 0.85);
+            --card-bg: #1A1A1A;
+            --input-bg: #0A0A0A;
+            --transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            --bg-color: #F3F4F6;
+            --text-color: #111827;
+            --border-color: #E5E7EB;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: #FFFFFF;
+            --input-bg: #F9FAFB;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Estilos del Header Glassmorphism */
+        .glass-header-nav {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            color: var(--uvmRed);
+            transform: translateX(-5px);
+        }
+
+        .header-logo-small {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .header-logo-small span {
+            color: var(--uvmRed);
+        }
+
+        .theme-toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 8px;
+            margin-right: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilos Adaptados de la Página de Horarios */
+        .uvm-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .uvm-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            transition: border-color 0.3s;
+        }
+
+        .uvm-input:focus { 
+            border-color: var(--uvmRed); 
+            outline: none; 
+        }
+
+        optgroup { background-color: var(--card-bg); color: var(--uvmRed); font-weight: bold; }
+        option { background-color: var(--bg-color); color: var(--text-color); }
+
+        .uvm-btn-red {
+            background-color: var(--uvmRed);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            font-weight: 800;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .uvm-btn-red:hover {
+            background-color: #ff0818;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(227, 6, 19, 0.4);
+        }
+
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: 50px repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+            padding: 12px;
+            border-radius: 20px;
+            overflow-x: auto;
+        }
+
+        .dia-col {
+            text-align: center;
+            font-size: 10px;
+            color: var(--uvmRed);
+            font-weight: 900;
+            padding-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .clase-slot { 
+            background: var(--bg-color); 
+            min-height: 60px; 
+            padding: 4px; 
+            position: relative; 
+            border: 0.1px solid var(--border-color); 
+        }
+
+        .clase-active { 
+            background: var(--uvmRed); 
+            color: white; 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 2px; 
+        }
+
+        .clase-inicio { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+        .clase-fin { border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+        
+        .materia-texto { font-weight: 900; text-transform: uppercase; font-size: 8px; text-align: center; line-height: 1; }
+        .lugar-texto { font-weight: 900; font-size: 11px; text-align: center; color: #000; background: white; padding: 1px 4px; border-radius: 4px; margin: 2px 0; }
+        .hora-texto { font-weight: 700; font-size: 7px; opacity: 0.9; text-align: center; }
+
+        .item-agenda {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--uvmRed);
+            transition: var(--transition);
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- 3. Estructura HTML del Header -->
+    <header class="glass-header-nav">
+        <div class="nav-container">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
+
+            <a href="#" class="header-logo-small">
+                ZONA<span>UVM</span>
+            </a>
+
+            <div style="display: flex; align-items: center;">
+                <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <div style="width: 32px; height: 32px; background: var(--uvmRed); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Contenido Principal -->
+        <div class="max-w-6xl mx-auto p-4 md:p-8">
+            <div class="flex justify-between items-end mb-6">
+                <h1 class="text-3xl font-black text-[#E30613] tracking-tighter italic">HORARIO</h1>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-1">
+                    <div class="uvm-card p-6 sticky top-24">
+                        <h2 class="text-xs font-black uppercase mb-4 text-gray-400 flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-[#E30613]"></i> Nueva Clase
+                        </h2>
+                        <div class="space-y-4">
+                            <input type="text" id="materia" class="uvm-input" placeholder="Materia">
+                            <select id="lugar" class="uvm-input">
+                                <optgroup label="Edificio S">
+                                    <option value="S-A1">S-A1</option><option value="S-A2">S-A2</option>
+                                    <option value="S-A3">S-A3</option><option value="S-A4">S-A4</option>
+                                    <option value="S-B1">S-B1</option><option value="S-C1">S-C1</option>
+                                </optgroup>
+                                <optgroup label="Áreas Comunes">
+                                    <option value="Ingeniería">Ingeniería</option>
+                                    <option value="Laboratorios">Laboratorios</option>
+                                    <option value="Auditorio">Auditorio</option>
+                                    <option value="Gugo">Gugo</option>
+                                </optgroup>
+                            </select>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="time" id="entrada" class="uvm-input">
+                                <input type="time" id="salida" class="uvm-input">
+                            </div>
+                            <select id="dia" class="uvm-input">
+                                <option value="0">Domingo</option><option value="1">Lunes</option>
+                                <option value="2">Martes</option><option value="3">Miércoles</option>
+                                <option value="4">Jueves</option><option value="5">Viernes</option>
+                                <option value="6">Sábado</option>
+                            </select>
+                            <button onclick="agregar()" class="uvm-btn-red">Guardar Agenda</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="uvm-card p-4 overflow-hidden">
+                        <div class="calendario-grid" id="grid-visual"></div>
+                    </div>
+                    <div id="lista-horarios" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER INTEGRADO - ZONA UVM -->
+    <footer class="border-t border-gray-300 dark:border-uvmBorder py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-uvmGray text-sm font-sans">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 4. Lógica JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Lógica de Temas
+            const themeBtn = document.getElementById('theme-toggle-nav');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    const isLightMode = document.body.classList.contains('light-mode');
+                    themeBtn.querySelector('i').className = isLightMode ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                    
+                    // Sincronizar con Tailwind Dark Mode y Clase HTML
+                    if(isLightMode) {
+                        document.documentElement.classList.remove('dark');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                    }
+                });
+            }
+
+            // Inicialización de Agenda
+            actualizarTodo();
+        });
+
+        let agenda = JSON.parse(localStorage.getItem('agendaUVM')) || [];
+        const diasSemana = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+
+        function agregar() {
+            const materia = document.getElementById('materia').value;
+            const lugar = document.getElementById('lugar').value;
+            const entrada = document.getElementById('entrada').value;
+            const salida = document.getElementById('salida').value;
+            const dia = document.getElementById('dia').value;
+
+            if(!materia || !entrada || !salida) return alert("Llena los datos, lince");
+
+            agenda.push({ id: Date.now(), materia, lugar, entrada, salida, dia: parseInt(dia) });
+            actualizarTodo();
+            document.getElementById('materia').value = '';
+        }
+
+        function actualizarTodo() {
+            localStorage.setItem('agendaUVM', JSON.stringify(agenda));
+            renderLista();
+            renderCalendario();
+        }
+
+        function renderLista() {
+            const lista = document.getElementById('lista-horarios');
+            lista.innerHTML = agenda.map(i => `
+                <div class="item-agenda p-4 rounded-xl flex justify-between items-center mb-2 shadow-sm">
+                    <div>
+                        <h4 class="text-xs font-black uppercase">${i.materia}</h4>
+                        <p class="text-[9px] opacity-70 font-bold">${diasSemana[i.dia]} | ${i.lugar} | ${i.entrada}-${i.salida}</p>
+                    </div>
+                    <button onclick="borrar(${i.id})" class="text-gray-400 hover:text-red-500 transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>`).join('');
+        }
+
+        function renderCalendario() {
+            const grid = document.getElementById('grid-visual');
+            if (!grid) return;
+            
+            let html = `<div class="dia-col">Hora</div>` + diasSemana.map(d => `<div class="dia-col">${d}</div>`).join('');
+            
+            for(let h = 7; h <= 21; h++) {
+                html += `<div class="text-[9px] opacity-40 font-black flex items-center justify-end pr-2 border-r border-gray-500/20">${h}:00</div>`;
+                for(let d = 0; d <= 6; d++) {
+                    const clase = agenda.find(c => {
+                        const hEntrada = parseInt(c.entrada.split(':')[0]);
+                        const hSalida = parseInt(c.salida.split(':')[0]);
+                        return c.dia === d && h >= hEntrada && h < hSalida;
+                    });
+
+                    if(clase) {
+                        const hEntrada = parseInt(clase.entrada.split(':')[0]);
+                        const hSalida = parseInt(clase.salida.split(':')[0]);
+                        let extraClass = "clase-active ";
+                        if (h === hEntrada) extraClass += "clase-inicio ";
+                        if (h === hSalida - 1) extraClass += "clase-fin ";
+
+                        html += `<div class="clase-slot ${extraClass}">
+                                    ${h === hEntrada ? `
+                                        <div class="materia-texto">${clase.materia}</div>
+                                        <div class="lugar-texto">${clase.lugar}</div>
+                                        <div class="hora-texto">${clase.entrada}-${clase.salida}</div>
+                                    ` : ''}
+                                 </div>`;
+                    } else {
+                        html += `<div class="clase-slot"></div>`;
+                    }
+                }
+            }
+            grid.innerHTML = html;
+        }
+
+        function borrar(id) {
+            if(confirm("¿Estás seguro de eliminar esta clase?")) { 
+                agenda = agenda.filter(i => i.id !== id); 
+                actualizarTodo(); 
+            }
+        }
+    </script>
+</body>
+</html>
