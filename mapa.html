@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONA UVM - App Estudiantil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABLES Y TEMAS --- */
+        :root {
+            --uvmRed: #E30613;
+            --uvmRedHover: #b3040e;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --card-bg: #1A1A1A;
+            --border-color: #333333;
+            --soft-gray: #A0A0A0;
+            --header-bg: rgba(10, 10, 10, 0.85);
+            --transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            --bg-color: #F3F4F6;
+            --text-color: #111827;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            --soft-gray: #6B7280;
+            --header-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        .glass-header-nav {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            color: var(--uvmRed);
+            transform: translateX(-5px);
+        }
+
+        .header-logo-small {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .header-logo-small span {
+            color: var(--uvmRed);
+        }
+
+        .theme-toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 8px;
+            margin-right: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- MAPA --- */
+        .main-shape {
+            fill: var(--card-bg);
+            stroke: var(--border-color);
+            stroke-width: 2;
+            transition: var(--transition);
+        }
+        .classroom-rect {
+            fill: var(--card-bg);
+            stroke: var(--border-color);
+            stroke-width: 1;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .classroom-rect:hover {
+            fill: var(--uvmRed);
+            stroke: white;
+        }
+        .restroom-rect {
+            fill: #3b82f622;
+            stroke: #3b82f6;
+            stroke-width: 1.5;
+            cursor: pointer;
+        }
+        .svg-icon {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            fill: var(--text-color);
+            font-size: 24px;
+        }
+        .restroom-svg-icon {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            fill: #3b82f6;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .map-label {
+            fill: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        .hallway-rect {
+            fill: var(--card-bg);
+            stroke: var(--border-color);
+            stroke-width: 2;
+            opacity: 0.4;
+        }
+        .route-path {
+            fill: none;
+            stroke: var(--uvmRed);
+            stroke-width: 4;
+            stroke-dasharray: 8;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .walker-body {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            fill: var(--uvmRed);
+            font-size: 20px;
+        }
+
+        /* --- INDICADOR AFLUENCIA --- */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+        .status-low { background-color: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .status-med { background-color: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+        .status-high { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
+        /* --- CARDS --- */
+        .place-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .place-card.active, .place-card:hover {
+            border-color: var(--uvmRed);
+            transform: translateY(-2px);
+        }
+        .text-readable-main { color: var(--text-color); }
+        .text-readable-muted { color: var(--soft-gray); }
+
+        /* Incidencias en el Mapa */
+        .incident-marker {
+            cursor: pointer;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Modal Simple */
+        #modal-overlay {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .highlight-report {
+            animation: highlightEffect 2s ease-out;
+        }
+        @keyframes highlightEffect {
+            0% { background-color: rgba(239, 68, 68, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        /* Notificación Flotante */
+        #toast-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+        }
+        /* --- EFECTO DE RESALTADO --- */
+.highlight-next {
+    fill: var(--uvmRed) !important;
+    stroke: white !important;
+    stroke-width: 3px !important;
+    animation: highlightPulse 1.5s infinite alternate !important;
+}
+
+@keyframes highlightPulse {
+    0% { filter: drop-shadow(0 0 2px var(--uvmRed)); transform: scale(1); }
+    100% { filter: drop-shadow(0 0 15px var(--uvmRed)); transform: scale(1.05); }
+}
+    </style>
+</head>
+<body class="dark-mode">
+
+<header class="glass-header-nav">
+    <div class="nav-container">
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            <span class="hidden sm:inline">Volver</span>
+        </a>
+
+        <a href="#" class="header-logo-small">
+            ZONA<span>UVM</span>
+        </a>
+
+        <div style="display: flex; align-items: center;">
+            <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+            <div style="width: 32px; height: 32px; background: var(--uvmRed); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-[1600px] mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Croquis Interactivo -->
+    <div class="lg:col-span-7">
+        <div class="flex items-center justify-between mb-4 px-2">
+            <h2 class="text-xl font-black uppercase italic tracking-tighter">Mapa del Campus</h2>
+            <button onclick="openIncidentModal()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-4 rounded-full transition-all flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i> REPORTAR INCIDENCIA
+            </button>
+        </div>
+        
+        <div class="map-container bg-[var(--card-bg)] rounded-3xl p-4 border border-[var(--border-color)] relative overflow-hidden">
+            <svg viewBox="0 0 800 900" class="w-full h-full" id="campus-svg">
+                <!-- Pasillos Horizontales -->
+                <rect x="150" y="220" width="500" height="40" rx="4" class="hallway-rect" />
+                <rect x="150" y="420" width="500" height="40" rx="4" class="hallway-rect" />
+                <rect x="150" y="620" width="500" height="40" rx="4" class="hallway-rect" />
+
+                <!-- Pasillos Verticales de Conexión (Separados de los bloques) -->
+                <rect x="135" y="220" width="10" height="440" rx="2" class="hallway-rect" />
+                <rect x="655" y="220" width="10" height="440" rx="2" class="hallway-rect" />
+
+                <!-- Capa para Salones Dinámicos -->
+                <g id="classrooms-layer"></g>
+
+                <!-- Áreas Verdes -->
+                <rect x="250" y="280" width="300" height="120" rx="20" fill="#22c55e" fill-opacity="0.1" stroke="#16a34a" stroke-width="2" stroke-dasharray="4" />
+                <rect x="250" y="480" width="300" height="120" rx="10" fill="#3b82f6" fill-opacity="0.05" stroke="#2563eb" stroke-width="2" />
+
+                <!-- Rutas -->
+                <path id="route-kingu" class="route-path" d="M 400 80 V 150 H 150" />
+                <path id="route-gugo" class="route-path" d="M 400 80 V 340 H 240" />
+                <path id="route-delishus" class="route-path" d="M 400 80 V 340 H 560" />
+                <path id="route-auditorio" class="route-path" d="M 400 80 V 440 H 140" />
+                <path id="route-labs" class="route-path" d="M 400 80 V 440 H 650" />
+                <path id="route-ingenieria" class="route-path" d="M 400 80 V 640 H 650" />
+                <path id="route-gym" class="route-path" d="M 400 80 V 640 H 140" />
+                
+                <!-- Rutas para Baños -->
+                <path id="route-banos-s-a2" class="route-path" d="M 400 80 V 190 H 228" />
+                <path id="route-banos-s-a10" class="route-path" d="M 400 80 V 190 H 612" />
+                <path id="route-banos-i-b10" class="route-path" d="M 400 80 V 450 H 612" />
+                <path id="route-banos-s-c6" class="route-path" d="M 400 80 V 590 H 420" />
+
+                <!-- Personaje (Walker) -->
+                <g id="walker" style="display: none;">
+                    <text class="walker-body" text-anchor="middle">&#xf554;</text>
+                    <animateMotion id="walker-anim" dur="4s" repeatCount="indefinite" rotate="auto" begin="indefinite" />
+                </g>
+
+                <!-- Etiquetas de Texto -->
+                <text x="400" y="245" text-anchor="middle" class="map-label text-[12px] opacity-40">Pasillo A</text>
+                <text x="400" y="445" text-anchor="middle" class="map-label text-[12px] opacity-40">Pasillo B</text>
+                <text x="400" y="645" text-anchor="middle" class="map-label text-[12px] opacity-40">Pasillo C</text>
+                <text x="400" y="345" text-anchor="middle" class="map-label text-[15px]">Jardín Central</text>
+                <text x="400" y="545" text-anchor="middle" class="map-label text-[15px]">Canchas</text>
+
+                <!-- Glorieta -->
+                <g transform="translate(400, 80)">
+                    <ellipse cx="0" cy="0" rx="110" ry="40" class="main-shape" />
+                    <text y="7" text-anchor="middle" class="map-label text-[16px]">Glorieta</text>
+                </g>
+
+                <!-- Locales (Ajustados con separación) -->
+                <g class="local-group" id="svg-kingu" onclick="selectItem('kingu')" transform="translate(30, 95)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape shadow-lg" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf521;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[10px]">KINGU SUSHI</text>
+                </g>
+
+                <g class="local-group" id="svg-gugo" onclick="selectItem('gugo')" transform="translate(130, 290)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape shadow-md" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf2e7;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[10px]">GUGO</text>
+                </g>
+
+                <g class="local-group" id="svg-delishus" onclick="selectItem('delishus')" transform="translate(570, 290)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape shadow-md" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf06c;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[10px]">DELISHUS</text>
+                </g>
+
+                <g class="local-group" id="svg-auditorio" onclick="selectItem('auditorio')" transform="translate(20, 395)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf130;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[9px]">AUDITORIO</text>
+                </g>
+
+                <g class="local-group" id="svg-labs" onclick="selectItem('labs')" transform="translate(680, 395)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf0c3;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[9px]">LABS</text>
+                </g>
+
+                <g class="local-group" id="svg-ingenieria" onclick="selectItem('ingenieria')" transform="translate(680, 595)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf085;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[9px]">INGENIERÍA</text>
+                </g>
+
+                <g class="local-group" id="svg-gym" onclick="selectItem('gym')" transform="translate(20, 595)" style="cursor:pointer;">
+                    <rect width="100" height="90" rx="16" class="main-shape" />
+                    <text x="50" y="45" text-anchor="middle" class="svg-icon">&#xf44b;</text>
+                    <text x="50" y="75" text-anchor="middle" class="map-label text-[9px]">GIMNASIO</text>
+                </g>
+
+                <!-- Capa de Incidencias Dinámicas -->
+                <g id="incidents-layer"></g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Directorio y Herramientas -->
+    <div class="lg:col-span-5 flex flex-col gap-6">
+        
+        <!-- Pestañas de Navegación -->
+        <div class="flex bg-[var(--card-bg)] p-1 rounded-2xl border border-[var(--border-color)]">
+            <button onclick="switchTab('info')" id="tab-info" class="flex-1 py-3 text-xs font-black uppercase rounded-xl bg-red-600 text-white transition-all">Directorio</button>
+            <button onclick="switchTab('reports')" id="tab-reports" class="flex-1 py-3 text-xs font-black uppercase rounded-xl text-readable-muted hover:text-readable-main transition-all">Incidencias</button>
+        </div>
+
+        <!-- Contenedor Directorio -->
+        <div id="panel-info" class="space-y-4">
+            <h3 class="text-xs font-black text-readable-muted uppercase tracking-widest px-2 flex justify-between">
+                <span>Sitios y Afluencia</span>
+            </h3>
+
+            <!-- Directorio de lugares generado por JS (Kingu Sushi, etc.) -->
+            <div class="grid grid-cols-1 gap-3 overflow-y-auto max-h-[600px] pr-2" id="directory-list">
+                <!-- Generado por JS -->
+            </div>
+
+            <div id="eventos-hoy-container" class="mt-8 border-t border-[var(--border-color)] pt-6 px-2">
+                <h3 class="text-lg font-black uppercase italic tracking-tighter mb-4 text-[var(--uvmRed)] flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day"></i> Eventos de Hoy
+                </h3>
+                <div id="lista-eventos-mapa" class="flex flex-col gap-3">
+                    <p class="text-[10px] text-[var(--soft-gray)] italic opacity-50">No hay eventos para hoy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor Reportes -->
+        <div id="panel-reports" class="hidden space-y-4">
+            <div id="incidents-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                <!-- Lista de incidencias dinámica -->
+            </div>
+        </div>
+
+        <!-- Caja de Información Detallada -->
+        <div id="info-box" class="hidden p-6 bg-[var(--card-bg)] rounded-3xl border-l-8 border-red-600 shadow-2xl animate-in slide-in-from-right duration-300">
+            <div class="flex justify-between items-start mb-2">
+                <h2 id="info-name" class="text-xl font-black text-red-600 italic uppercase">Nombre</h2>
+                <span id="info-status" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">ALTA AFLUENCIA</span>
+            </div>
+            <p id="info-desc" class="text-sm text-readable-main leading-relaxed font-bold mb-4">Descripción detallada aquí.</p>
+        </div>
+
+    </div> <!-- Cierre de la columna de Herramientas -->
+</main>
+
+<!-- Modal de Reporte -->
+<div id="modal-overlay" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
+    <div class="bg-[var(--card-bg)] w-full max-w-md rounded-3xl border border-[var(--border-color)] shadow-2xl p-8 scale-95 transition-transform" id="report-modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-black uppercase italic text-red-600">Nuevo Reporte</h3>
+            <button onclick="closeIncidentModal()" class="text-readable-muted hover:text-readable-main text-2xl">&times;</button>
+        </div>
+        
+        <form id="incident-form" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-black uppercase mb-2 text-readable-muted">Tipo de Problema</label>
+                <select id="inc-type" class="w-full bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-3 text-sm font-bold text-readable-main outline-none focus:border-red-600">
+                    <option value="baño">Baño Descompuesto</option>
+                    <option value="limpieza">Falta de Limpieza</option>
+                    <option value="infra">Infraestructura (Goteras/Luces)</option>
+                    <option value="wifi">Problemas de WiFi</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black uppercase mb-2 text-readable-muted">Ubicación</label>
+                <select id="inc-loc" class="w-full bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-3 text-sm font-bold text-readable-main outline-none focus:border-red-600">
+                    <option value="150,220">Pasillo A</option>
+                    <option value="150,420">Pasillo B</option>
+                    <option value="150,620">Pasillo C</option>
+                    <option value="400,80">Glorieta</option>
+                    <option value="300,340">Jardín Central</option>
+                    <option value="400,540">Canchas</option>
+                    <option value="600,640">Ingeniería</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black uppercase mb-2 text-readable-muted">Descripción</label>
+                <textarea id="inc-desc" rows="3" class="w-full bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-3 text-sm font-bold text-readable-main outline-none focus:border-red-600" placeholder="Ej: No hay agua en el baño de hombres..."></textarea>
+            </div>
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl uppercase tracking-widest transition-all">Enviar Reporte</button>
+        </form>
+    </div>
+</div>
+
+<!-- Contenedor de Toasts -->
+<div id="toast-container"></div>
+
+    <!-- FOOTER ZONA UVM -->
+    <footer class="border-t border-gray-300 dark:border-uvmBorder py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-uvmGray text-sm font-sans">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+            <div class="flex space-x-6">
+                <!-- Espacio reservado para futuros enlaces o íconos -->
+            </div>
+        </div>
+    </footer>
+<!-- 1. NUEVA CONFIGURACIÓN DE TAILWIND -->
+<script>
+        tailwind.config = {
+            darkMode: 'class', // Habilita el modo oscuro basado en clases
+            theme: {
+                extend: {
+                    colors: {
+                        uvmRed: '#E30613',
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    }
+                }
+            }
+        }
+    
+
+    // Configuración de Afluencia Dinámica
+    const placeData = {
+        'kingu': { name: "KINGU SUSHI", desc: "El mejor sushi de UVM GDL Sur.", flow: 'low', type: 'local' },
+        'gugo': { name: "GUGO", desc: "Desayunos rápidos y chilaquiles.", flow: 'high', type: 'local' },
+        'delishus': { name: "DELISHUS", desc: "Jugos y ensaladas saludables.", flow: 'med', type: 'local' },
+        'auditorio': { name: "Auditorio Lince", desc: "Eventos académicos.", flow: 'low', type: 'local' },
+        'labs': { name: "Laboratorios", desc: "Experimentación técnica.", flow: 'low', type: 'local' },
+        'gym': { name: "Gimnasio", desc: "Entrenamiento lince.", flow: 'high', type: 'local' },
+        'ingenieria': { name: "Ingeniería", desc: "Talleres de innovación.", flow: 'med', type: 'local' },
+        // Baños en Directorio
+        'banos-s-a2': { name: "Baños Pasillo A (Norte)", desc: "Servicios sanitarios.", flow: 'low', type: 'baño' },
+        'banos-s-a10': { name: "Baños Pasillo A (Sur)", desc: "Servicios sanitarios.", flow: 'low', type: 'baño' },
+        'banos-i-b10': { name: "Baños Pasillo B", desc: "Servicios sanitarios.", flow: 'low', type: 'baño' },
+        'banos-s-c6': { name: "Baños Pasillo C", desc: "Servicios sanitarios.", flow: 'low', type: 'baño' }
+    };
+
+    // Incidencias vacías inicialmente
+    let incidents = [];
+
+    const flowLabels = {
+        'low': { text: 'Baja Afluencia', class: 'bg-green-500/20 text-green-500', dot: 'status-low' },
+        'med': { text: 'Moderada', class: 'bg-amber-500/20 text-amber-500', dot: 'status-med' },
+        'high': { text: 'Alta Afluencia', class: 'bg-red-500/20 text-red-500', dot: 'status-high' }
+    };
+
+    let timeLeft = 30; 
+
+function init() {
+    drawClassrooms();
+    renderDirectory();
+    renderIncidents();
+    actualizarMapaAfluencia(); 
+    startAfluenciaTimer();
+    }
+
+    // Timer de actualización cada 30 segundos (Lógica mantenida, visual eliminado)
+    function startAfluenciaTimer() {
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                updateFlows();
+                timeLeft = 30;
+            }
+        }, 1000);
+    }
+
+    function updateFlows() {
+        const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        
+        placeData['kingu'].flow = getRandom(['low', 'med']);
+        placeData['gugo'].flow = getRandom(['low', 'med', 'high']);
+        placeData['delishus'].flow = getRandom(['low', 'med', 'high']);
+        placeData['auditorio'].flow = 'low';
+        placeData['labs'].flow = 'low';
+        placeData['gym'].flow = getRandom(['med', 'high']);
+        placeData['ingenieria'].flow = 'med';
+        
+        ['banos-s-a2', 'banos-s-a10', 'banos-i-b10', 'banos-s-c6'].forEach(key => {
+            placeData[key].flow = getRandom(['low', 'med']);
+        });
+
+        renderDirectory();
+        actualizarMapaAfluencia();
+    }
+
+    function drawClassrooms() {
+        const layer = document.getElementById('classrooms-layer');
+        const pasillos = [
+            { id: 'A', y: 220 },
+            { id: 'B', y: 420 },
+            { id: 'C', y: 620 }
+        ];
+
+        const replacements = {
+            'S-A2': 'banos-s-a2',
+            'S-A10': 'banos-s-a10',
+            'I-B10': 'banos-i-b10',
+            'S-C6': 'banos-s-c6'
+        };
+
+        pasillos.forEach(p => {
+            for(let i = 0; i < 10; i++) {
+                const xPos = 160 + (i * 50);
+                const sLabel = `S-${p.id}${i+1}`;
+                const iLabel = `I-${p.id}${i+1}`;
+                
+                if (replacements[sLabel]) createRestroomElement(layer, xPos, p.y - 35, replacements[sLabel]);
+                else createRoomElement(layer, xPos, p.y - 35, sLabel);
+
+                if (replacements[iLabel]) createRestroomElement(layer, xPos, p.y + 45, replacements[iLabel]);
+                else createRoomElement(layer, xPos, p.y + 45, iLabel);
+            }
+        });
+    }
+
+    function createRoomElement(parent, x, y, label) {
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", x); rect.setAttribute("y", y);
+        rect.setAttribute("width", 38); rect.setAttribute("height", 23);
+        rect.setAttribute("rx", "4"); rect.setAttribute("class", "classroom-rect");
+        rect.setAttribute("id", "room-" + label); // ID para highlighting
+        rect.onclick = () => showInfo(`Salón ${label}`, `Aula de clases estándar.`, "DISPONIBLE", "bg-green-500/20 text-green-500");
+        
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x + 19); text.setAttribute("y", y + 14);
+        text.setAttribute("text-anchor", "middle"); text.setAttribute("class", "map-label");
+        text.setAttribute("style", "font-size: 8px; pointer-events: none; opacity: 0.6;");
+        text.textContent = label;
+
+        parent.appendChild(rect);
+        parent.appendChild(text);
+    }
+
+    function createRestroomElement(parent, x, y, id) {
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", x); rect.setAttribute("y", y);
+        rect.setAttribute("width", 38); rect.setAttribute("height", 23);
+        rect.setAttribute("rx", "4"); rect.setAttribute("class", "restroom-rect");
+        rect.onclick = () => selectItem(id);
+        
+        const icon = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        icon.setAttribute("x", x + 19); icon.setAttribute("y", y + 16);
+        icon.setAttribute("text-anchor", "middle"); icon.setAttribute("class", "restroom-svg-icon");
+        icon.innerHTML = "&#xf7d8;";
+
+        const status = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        status.setAttribute("cx", x + 32); status.setAttribute("cy", y + 6); status.setAttribute("r", 2.5);
+        status.setAttribute("fill", "#3b82f6");
+
+        parent.appendChild(rect);
+        parent.appendChild(icon);
+        parent.appendChild(status);
+    }
+
+    function showInfo(name, desc, status, statusClass) {
+        const infoBox = document.getElementById('info-box');
+        document.getElementById('info-name').innerText = name;
+        document.getElementById('info-desc').innerText = desc;
+        const statusBadge = document.getElementById('info-status');
+        statusBadge.innerText = status;
+        statusBadge.className = `px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${statusClass}`;
+        infoBox.classList.remove('hidden');
+    }
+
+    function renderDirectory() {
+        const list = document.getElementById('directory-list');
+        list.innerHTML = '';
+        
+        Object.keys(placeData).forEach(id => {
+            const data = placeData[id];
+            const flow = flowLabels[data.flow];
+            const icon = data.type === 'baño' ? 'fa-restroom' : getIcon(id);
+            
+            list.innerHTML += `
+                <div id="card-${id}" onclick="selectItem('${id}')" class="place-card p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center">
+                        <i class="fas ${icon} text-xl ${data.type === 'baño' ? 'text-blue-500' : 'text-slate-500'}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-black text-sm uppercase text-readable-main">${data.name}</h4>
+                        <div class="flex items-center mt-1">
+                            <span class="status-dot ${flow.dot}"></span>
+                            <span class="text-[9px] font-black uppercase tracking-tighter ${flow.class.split(' ')[1]}">${flow.text}</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-[10px] text-readable-muted"></i>
+                </div>
+            `;
+        });
+    }
+
+    function getIcon(id) {
+        const map = { 'kingu': 'fa-crown', 'gugo': 'fa-utensils', 'delishus': 'fa-leaf', 'auditorio': 'fa-microphone', 'labs': 'fa-flask', 'gym': 'fa-dumbbell', 'ingenieria': 'fa-gear' };
+        return map[id] || 'fa-location-dot';
+    }
+
+    function renderIncidents() {
+        const layer = document.getElementById('incidents-layer');
+        const list = document.getElementById('incidents-list');
+        layer.innerHTML = ''; list.innerHTML = '';
+
+        if (incidents.length === 0) {
+            list.innerHTML = `<div class="p-8 text-center text-readable-muted text-xs font-bold italic">No hay reportes activos.</div>`;
+            return;
+        }
+
+        incidents.forEach(inc => {
+            const marker = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            marker.setAttribute("class", "incident-marker");
+            marker.setAttribute("transform", `translate(${inc.x}, ${inc.y})`);
+            marker.onclick = () => showIncidentDetail(inc.id);
+            marker.innerHTML = `<circle r="12" fill="#ef4444" fill-opacity="0.3" /><circle r="6" fill="#ef4444" />`;
+            layer.appendChild(marker);
+
+            list.innerHTML += `
+                <div id="item-${inc.id}" class="p-4 bg-white/5 border border-white/10 rounded-2xl relative group">
+                    <button onclick="deleteIncident('${inc.id}')" class="absolute top-4 right-4 text-readable-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-trash-can"></i>
+                    </button>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[9px] font-black uppercase bg-red-600 px-2 py-0.5 rounded text-white">${inc.type}</span>
+                    </div>
+                    <h5 class="text-xs font-bold text-readable-main">${inc.loc}</h5>
+                    <p class="text-[11px] text-readable-muted">${inc.desc}</p>
+                </div>
+            `;
+        });
+    }
+
+    function deleteIncident(id) {
+        incidents = incidents.filter(i => i.id !== id);
+        renderIncidents();
+        showToast("Incidencia eliminada");
+    }
+
+    function showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = "bg-red-600 text-white font-black py-3 px-8 rounded-full text-xs uppercase shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300 mb-4";
+        toast.innerText = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('animate-out', 'fade-out', 'slide-out-to-bottom-4');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function showIncidentDetail(id) {
+        switchTab('reports');
+        const element = document.getElementById(`item-${id}`);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('highlight-report');
+            setTimeout(() => element.classList.remove('highlight-report'), 2000);
+        }
+    }
+
+    function selectItem(id) {
+        document.querySelectorAll('.route-path').forEach(p => p.style.opacity = '0');
+        document.querySelectorAll('.place-card').forEach(c => c.classList.remove('active'));
+
+        const card = document.getElementById(`card-${id}`);
+        const path = document.getElementById(`route-${id}`);
+        const walker = document.getElementById('walker');
+        const walkerAnim = document.getElementById('walker-anim');
+
+        if (card) card.classList.add('active');
+        if (path) path.style.opacity = '1';
+
+        if (walker && path && walkerAnim) {
+            walker.style.display = 'block';
+            walkerAnim.setAttribute('path', path.getAttribute('d'));
+            walkerAnim.beginElement();
+        }
+
+        if (placeData[id]) {
+            const data = placeData[id];
+            const flow = flowLabels[data.flow];
+            showInfo(data.name, data.desc, flow.text, flow.class);
+        }
+    }
+
+    function switchTab(tab) {
+        const btnInfo = document.getElementById('tab-info');
+        const btnReports = document.getElementById('tab-reports');
+        const panelInfo = document.getElementById('panel-info');
+        const panelReports = document.getElementById('panel-reports');
+        const infoBox = document.getElementById('info-box');
+
+        if(tab === 'info') {
+            btnInfo.classList.add('bg-red-600', 'text-white'); btnReports.classList.remove('bg-red-600', 'text-white');
+            panelInfo.classList.remove('hidden'); panelReports.classList.add('hidden');
+        } else {
+            btnReports.classList.add('bg-red-600', 'text-white'); btnInfo.classList.remove('bg-red-600', 'text-white');
+            panelReports.classList.remove('hidden'); panelInfo.classList.add('hidden');
+            // Ocultar descripción al cambiar a incidencias
+            infoBox.classList.add('hidden');
+            document.querySelectorAll('.place-card').forEach(c => c.classList.remove('active'));
+        }
+    }
+
+    function openIncidentModal() { document.getElementById('modal-overlay').classList.remove('hidden'); }
+    function closeIncidentModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+
+    document.getElementById('incident-form').onsubmit = (e) => {
+        e.preventDefault();
+        const type = document.getElementById('inc-type').value;
+        const locName = document.getElementById('inc-loc').options[document.getElementById('inc-loc').selectedIndex].text;
+        const coords = document.getElementById('inc-loc').value.split(',').map(Number);
+        const desc = document.getElementById('inc-desc').value;
+        incidents.unshift({ id: 'inc-' + Date.now(), type, loc: locName, x: coords[0], y: coords[1], desc: desc || "Reporte." });
+        renderIncidents(); closeIncidentModal(); switchTab('reports');
+    };
+    
+// Función para pintar el mapa según la afluencia (Actividad A5)
+    function actualizarMapaAfluencia() {
+    Object.keys(placeData).forEach(id => {
+        const data = placeData[id];
+        const svgGroup = document.getElementById(`svg-${id}`);
+        if (svgGroup) {
+            const rectangulo = svgGroup.querySelector('.main-shape');
+            if (rectangulo) {
+                let colorAlerta = '';
+                if (data.flow === 'low') colorAlerta = '#22c55e';
+                else if (data.flow === 'med') colorAlerta = '#f59e0b';
+                else if (data.flow === 'high') colorAlerta = '#ef4444';
+
+                rectangulo.style.stroke = colorAlerta;
+                rectangulo.style.strokeWidth = '4px';
+            }
+        }
+    });
+}
+
+    const themeBtn = document.getElementById('theme-toggle-nav');
+    themeBtn.onclick = () => {
+        document.body.classList.toggle('light-mode');
+        themeBtn.querySelector('i').className = document.body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    };
+
+    window.onload = init;
+    // --- FUNCIÓN PARA RESALTAR LA PRÓXIMA CLASE ---
+function resaltarClaseAutomatica() {
+    // 1. Identificar salones (les pone ID basado en su texto)
+    document.querySelectorAll('.classroom-rect').forEach(rect => {
+        const label = rect.nextElementSibling ? rect.nextElementSibling.textContent : null;
+        if (label) rect.id = "room-" + label.trim();
+    });
+
+    // 2. Leer horario del localStorage
+    const agenda = JSON.parse(localStorage.getItem('agendaUVM')) || [];
+    if (agenda.length === 0) return;
+
+    // 3. Obtener tiempo actual
+    const ahora = new Date();
+    const diaActual = ahora.getDay(); // 1=Lunes... 6=Sábado
+    const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
+
+    // 4. Buscar la clase que sigue o está ocurriendo
+    const clasesHoy = agenda.filter(c => parseInt(c.dia) === diaActual);
+    let proxima = null;
+    let menorDif = Infinity;
+
+    clasesHoy.forEach(c => {
+        const [hE, mE] = c.entrada.split(':').map(Number);
+        const [hS, mS] = c.salida.split(':').map(Number);
+        const entradaMins = hE * 60 + mE;
+        const salidaMins = hS * 60 + mS;
+
+        if (salidaMins > minutosActuales) { // La clase no ha terminado
+            if (entradaMins < menorDif) {
+                menorDif = entradaMins;
+                proxima = c;
+            }
+        }
+    });
+
+    // 5. Aplicar el brillo al elemento correcto
+    if (proxima) {
+        let target = null;
+        const lugar = proxima.lugar;
+
+        // Mapeo para lugares especiales o salones
+        const mapaEspecial = {
+            "Kingu Sushi": "svg-kingu", "Gugo": "svg-gugo",
+            "Auditorio Lince": "svg-auditorio", "Laboratorios": "svg-labs",
+            "Gimnasio": "svg-gym", "Ingeniería": "svg-ingenieria"
+        };
+
+        if (mapaEspecial[lugar]) {
+            const group = document.getElementById(mapaEspecial[lugar]);
+            target = group ? group.querySelector('.main-shape') : null;
+        } else {
+            // Handle both "S-A1" and "Salón S-A1" formats
+            const code = lugar.replace("Salón ", "").trim();
+            target = document.getElementById("room-" + code);
+        }
+
+        if (target) {
+            target.classList.add('highlight-next');
+            console.log("Resaltando próxima clase:", proxima.materia);
+        }
+    }
+}
+
+// Ejecutar después de que todo cargue
+window.addEventListener('load', () => {
+    setTimeout(resaltarClaseAutomatica, 500); // Pequeño delay para asegurar que el mapa se dibujó
+});
+
+</script>
+   <!-- 3. NUEVO SCRIPT: Lógica Inteligente de Modo Claro/Oscuro -->
+    <script>
+        (function() {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            // Función que sincroniza la clase 'dark' de HTML basándose en 'light-mode' del BODY
+            function syncTailwindDarkMode() {
+                // Si tu body tiene la clase 'light-mode', apagamos el modo dark de Tailwind en el HTML
+                if (bodyEl.classList.contains('light-mode')) {
+                    htmlEl.classList.remove('dark');
+                } else {
+                    // Si no la tiene, activamos el dark mode por defecto de tu UI
+                    htmlEl.classList.add('dark');
+                }
+            }
+
+            // Ejecutar al cargar la página
+            syncTailwindDarkMode();
+
+            // Observador (MutationObserver): Detecta silenciosamente cuando tus scripts originales 
+            // cambian el tema del body, y actualiza el footer al instante sin interferir con tu código.
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        syncTailwindDarkMode();
+                    }
+                });
+            });
+
+            // Iniciar la observación
+            observer.observe(bodyEl, { attributes: true });
+        })();
+    </script>
+
+    <!-- Tu script original del switch (Mantenido intacto) -->
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggle');
+        if (themeToggleBtn) {
+            const icon = themeToggleBtn.querySelector('i');
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                if (document.body.classList.contains('light-mode')) {
+                    icon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    icon.classList.replace('fa-sun', 'fa-moon');
+                }
+            });
+        }
+    </script>
+
+    <script>
+    function cargarEventosEnMapa() {
+        const listaContenedor = document.getElementById('lista-eventos-mapa');
+        const eventosGuardados = JSON.parse(localStorage.getItem('eventosUVM')) || [];
+        
+        // Obtener el día actual (0=Dom, 1=Lun, etc.)
+        const hoy = new Date().getDay();
+        
+        // Filtrar eventos para el día de hoy
+        const eventosHoy = eventosGuardados.filter(e => parseInt(e.dia) === hoy);
+
+        if (eventosHoy.length > 0) {
+            listaContenedor.innerHTML = eventosHoy.map(evento => `
+                <div class="place-card p-4 rounded-2xl border-l-4 ${evento.tipo === 'suspension' ? 'border-red-600' : 'border-yellow-500'} bg-[var(--card-bg)]">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[9px] font-black uppercase tracking-widest ${evento.tipo === 'suspension' ? 'text-red-500' : 'text-yellow-500'}">
+                                ${evento.tipo === 'extra' ? 'Evento Extracurricular' : 'Aviso Oficial'}
+                            </span>
+                            <h4 class="text-readable-main font-bold text-sm mt-1">${evento.nombre}</h4>
+                            <p class="text-[var(--soft-gray)] text-[10px] mt-1 italic">
+                                <i class="fa-regular fa-clock mr-1"></i>${evento.inicio} - ${evento.fin}
+                            </p>
+                        </div>
+                        <button onclick="resaltarLugar('${evento.lugar}')" class="text-[var(--uvmRed)] hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Función para que al picarle al icono de ubicación, brille el lugar en el mapa
+    function resaltarLugar(nombreLugar) {
+        // Esto asume que el 'lugar' escrito en el horario coincide con algún ID del mapa
+        // Ejemplo: si el lugar es 'gym', buscará el elemento con id 'svg-gym'
+        const elemento = document.getElementById('svg-' + nombreLugar.toLowerCase());
+        if (elemento) {
+            elemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            elemento.classList.add('highlight-next');
+            setTimeout(() => elemento.classList.remove('highlight-next'), 3000);
+        } else {
+            alert("Lugar: " + nombreLugar + " (No mapeado en el croquis)");
+        }
+    }
+
+    // Ejecutar al cargar la página
+    window.addEventListener('DOMContentLoaded', cargarEventosEnMapa);
+</script>
+</body>
+</html>

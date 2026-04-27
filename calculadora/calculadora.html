@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Promedio PRO UVM</title>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        uvmRed: '#E30613',
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode">
+
+    <header class="glass-header-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
+            <a href="#" class="header-logo-small">ZONA<span>UVM</span></a>
+            <div style="display: flex; align-items: center;">
+                <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <div style="width: 32px; height: 32px; background: #E30613; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+<main class="main-wrapper">
+    <section id="calculadora-promedio" class="promedio-section">
+        <h2 class="titulo-principal">Mi Promedio UVM</h2>
+        
+        <div class="input-card">
+                <div class="input-card-header">
+                    <h3><span class="icon">➕</span> Añadir Materia (Máx 10)</h3>
+                </div>
+                
+                <div class="input-group-row">
+                    <input type="text" id="subject-name-input" placeholder="Nombre de la materia (Ej. Cálculo)" class="uvm-input">
+                    <select id="subject-partials-input" class="uvm-select">
+    <option value="" disabled selected>Elige el número de parciales</option>
+    <option value="2">2 parciales</option>
+    <option value="3">3 parciales</option>
+    <option value="4">4 parciales</option>
+</select>
+                    <button id="btn-add-subject" class="btn-primary-uvm">Añadir</button>
+                </div>
+            </div>
+
+            <div id="subjects-list" class="subjects-list-container"></div>
+        </section>
+    </main>
+
+    <footer class="border-t py-12 px-6 transition-colors duration-300" style="background: var(--header-bg); backdrop-filter: blur(12px); border-color: var(--border-color);">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm font-sans" style="color: var(--text-color); opacity: 0.7;">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+            <div class="flex space-x-6"></div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

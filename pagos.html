@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagos UVM - Portal Estudiantil</title>
+    
+    <!-- Dependencias Solicitadas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Configuración de Tailwind para el Footer y contenido -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Habilita el modo oscuro basado en la clase 'dark' en el html
+            theme: {
+                extend: {
+                    colors: {
+                        uvmRed: '#E30613',
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Variables y Estilos CSS Solicitados -->
+    <style>
+        /* Variables y Temas */
+        :root {
+            --uvmRed: #E30613;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --border-color: #333333;
+            --header-bg: rgba(10, 10, 10, 0.85);
+            --card-bg: rgba(25, 25, 25, 0.6);
+            --transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            --bg-color: #F3F4F6;
+            --text-color: #111827;
+            --border-color: #E5E7EB;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Estilos del Header Glassmorphism */
+        .glass-header-nav {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            color: var(--uvmRed);
+            transform: translateX(-5px);
+        }
+
+        .header-logo-small {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .header-logo-small span {
+            color: var(--uvmRed);
+        }
+
+        .theme-toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 8px;
+            margin-right: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilos personalizados para las tarjetas de contenido */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: var(--transition);
+        }
+
+        /* Checkbox personalizado */
+        .custom-checkbox {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.25em;
+            height: 1.25em;
+            border: 2px solid var(--border-color);
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        body.light-mode .custom-checkbox {
+            border: 2px solid #D1D5DB;
+        }
+
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .custom-checkbox:checked {
+            background-color: var(--uvmRed);
+            border-color: var(--uvmRed);
+        }
+
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
+
+        /* Animación suave para elementos que se ocultan */
+        .fade-transition {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* Animación para las rayas de la barra de progreso */
+        @keyframes moveStripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 0; }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- ENCABEZADO SOLICITADO -->
+    <header class="glass-header-nav">
+        <div class="nav-container">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
+
+            <a href="#" class="header-logo-small">
+                ZONA<span>UVM</span>
+            </a>
+
+            <div style="display: flex; align-items: center;">
+                <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <div style="width: 32px; height: 32px; background: var(--uvmRed); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL: SECCIÓN DE PAGOS -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-10">
+        <div class="mb-8">
+            <h1 class="text-3xl font-extrabold mb-2">Control de <span class="text-uvmRed">Pagos y Fechas</span></h1>
+            <p class="text-sm opacity-80">Organiza tu semestre, lleva el seguimiento de tus vencimientos y evita recargos.</p>
+        </div>
+
+        <!-- FILA 1: PANEL DE RESUMEN (Semáforo + Beca) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <!-- 1. El Semáforo de Pagos -->
+            <div class="lg:col-span-2 glass-card p-8 relative overflow-hidden flex flex-col justify-between" id="semaforo-container">
+                <!-- El fondo y borde cambiarán dinámicamente vía JS -->
+                <div class="absolute top-0 right-0 w-32 h-32 opacity-10 transform translate-x-8 -translate-y-8">
+                    <i id="semaforo-bg-icon" class="fa-solid fa-clock text-9xl"></i>
+                </div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div id="semaforo-dot" class="w-4 h-4 rounded-full bg-gray-500 animate-pulse"></div>
+                        <h2 class="text-xl font-bold uppercase tracking-wide">Estado Actual</h2>
+                    </div>
+
+                    <div id="semaforo-content" class="fade-transition">
+                        <!-- Contenido dinámico inyectado por JS -->
+                        <h3 class="text-4xl font-extrabold mb-2" id="semaforo-title">Calculando...</h3>
+                        <p class="text-lg mb-6 opacity-90" id="semaforo-subtitle">Revisando tus fechas de pago.</p>
+                        
+                        <div class="flex items-start gap-3 bg-black/10 dark:bg-white/5 p-4 rounded-lg mb-8 max-w-xl backdrop-blur-sm">
+                            <i class="fa-solid fa-shield-halved text-uvmRed mt-1"></i>
+                            <p class="text-sm font-medium"><strong>Estatus de Beca:</strong> Recuerda que realizar tus pagos antes de la fecha límite es un requisito indispensable para mantener tu porcentaje de beca actual.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-10 flex flex-wrap gap-4 mt-auto">
+                    <a href="https://conexionlince.uvm.mx/" target="_blank" class="bg-uvmRed hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-red-500/30">
+                        Pagar en Conexión Lince <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Calculadora de Beca -->
+            <div class="glass-card p-6 flex flex-col justify-center">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-percent text-uvmRed text-2xl"></i>
+                        <h2 class="text-xl font-bold">Mi Beca</h2>
+                    </div>
+                </div>
+                <p class="text-sm opacity-80 mb-6">Ingresa tu porcentaje. Se aplicará automáticamente a tus parcialidades para proyectar tus pagos.</p>
+                <div class="flex items-center gap-3 bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-gray-200 dark:border-uvmBorder">
+                    <input type="number" id="beca-input" min="0" max="100" placeholder="Ej. 30" class="w-full bg-transparent text-2xl font-bold text-center focus:outline-none focus:text-uvmRed transition-colors">
+                    <span class="text-2xl font-bold text-gray-400">%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILA 2: SEGUIMIENTO Y CALENDARIO -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 3. Widget de Checklist de Pago -->
+            <div class="lg:col-span-2 glass-card p-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="fa-solid fa-list-check text-uvmRed text-xl"></i>
+                    <h2 class="text-lg font-bold">Seguimiento del Semestre</h2>
+                </div>
+                <p class="text-sm opacity-70 mb-6 pb-4 border-b border-gray-300 dark:border-uvmBorder">
+                    Marca los pagos que ya realizaste en el portal oficial para llevar tu control personal y pausar las alertas.
+                </p>
+                
+                <!-- Contenedor tipo Grid -->
+                <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Los items se generarán con JS -->
+                </div>
+            </div>
+
+            <!-- 4. Barra de Progreso del Semestre -->
+            <div class="glass-card p-6 h-fit">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fa-solid fa-chart-line text-uvmRed text-xl"></i>
+                    <h2 class="text-lg font-bold">Progreso del Semestre</h2>
+                </div>
+                
+                <!-- El contenedor de la barra de progreso. Se inyectará con JS -->
+                <div id="progress-container" class="flex flex-col gap-4">
+                    <!-- Progress Items generados por JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA SOLICITADO -->
+    <footer class="border-t border-gray-300 dark:border-uvmBorder py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-uvmGray text-sm font-sans">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+            <div class="flex space-x-6"></div>
+        </div>
+    </footer>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- 1. LÓGICA DE TEMA (CLARO/OSCURO) UNIFICADA ---
+            const themeBtn = document.getElementById('theme-toggle-nav');
+            
+            const updateThemeIcon = () => {
+                const isLightMode = document.body.classList.contains('light-mode');
+                if(themeBtn) {
+                    themeBtn.querySelector('i').className = isLightMode ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                }
+            };
+
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    document.body.classList.toggle('dark-mode');
+                    document.documentElement.classList.toggle('dark');
+                    updateThemeIcon();
+                });
+            }
+            updateThemeIcon();
+
+            // --- 2. LÓGICA DE DATOS Y ESTADO ---
+            const defaultPayments = [
+                { id: 'pago_0a', title: 'Parcialidad 1', date: '2026-02-15T12:00:00Z', amount: 9795, isMensualidad: true, done: false },
+                { id: 'pago_0b', title: 'Parcialidad 2', date: '2026-03-13T12:00:00Z', amount: 9795, isMensualidad: true, done: false },
+                { id: 'pago_1', title: 'RVOE', date: '2026-04-30T12:00:00Z', amount: 1355, isMensualidad: false, done: false },
+                { id: 'pago_2', title: 'Parcialidad 3', date: '2026-05-13T12:00:00Z', amount: 9795, isMensualidad: true, done: false },
+                { id: 'pago_3', title: 'Parcialidad 4', date: '2026-06-08T12:00:00Z', amount: 9795, isMensualidad: true, done: false },
+                { id: 'pago_4', title: 'Seguro Futuro Seguro', date: '2026-06-30T12:00:00Z', amount: 775, isMensualidad: false, done: false },
+                { id: 'pago_5', title: 'Seg. Gastos Médicos Mayores', date: '2026-06-30T12:00:00Z', amount: 1295, isMensualidad: false, done: false },
+                { id: 'pago_6', title: 'Plan de Protección Escolar', date: '2026-06-30T12:00:00Z', amount: 1295, isMensualidad: false, done: false },
+                { id: 'pago_7', title: 'Parcialidad 5', date: '2026-07-01T12:00:00Z', amount: 9795, isMensualidad: true, done: false },
+                { id: 'pago_8', title: 'Parcialidad 1 / Reinscripción', date: '2026-07-31T12:00:00Z', amount: 9795, isMensualidad: false, done: false }
+            ];
+
+            let payments = JSON.parse(localStorage.getItem('uvm_payments_checklist_v4'));
+            if (!payments || payments.length === 0) {
+                payments = defaultPayments;
+            }
+
+            let becaPorcentaje = parseInt(localStorage.getItem('uvm_beca_porcentaje')) || 0;
+            const becaInput = document.getElementById('beca-input');
+            if (becaInput) {
+                becaInput.value = becaPorcentaje > 0 ? becaPorcentaje : '';
+                becaInput.addEventListener('input', (e) => {
+                    let val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 0) val = 0;
+                    if (val > 100) val = 100;
+                    becaPorcentaje = val;
+                    localStorage.setItem('uvm_beca_porcentaje', becaPorcentaje);
+                    renderChecklist();
+                    updateSemaforo();
+                });
+            }
+
+            const formatMoney = (amount) => {
+                return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(amount);
+            };
+
+            const checklistContainer = document.getElementById('checklist-container');
+            const semaforoTitle = document.getElementById('semaforo-title');
+            const semaforoSubtitle = document.getElementById('semaforo-subtitle');
+            const semaforoDot = document.getElementById('semaforo-dot');
+            const semaforoContainer = document.getElementById('semaforo-container');
+            const semaforoBgIcon = document.getElementById('semaforo-bg-icon');
+
+            // --- 3. FUNCIONES DE RENDERIZADO UI ---
+
+            const renderChecklist = () => {
+                checklistContainer.innerHTML = '';
+                payments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                payments.forEach((payment) => {
+                    const dateObj = new Date(payment.date);
+                    const dateStr = dateObj.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' });
+                    
+                    let finalAmount = payment.amount;
+                    let originalAmountHtml = '';
+
+                    if (payment.isMensualidad && becaPorcentaje > 0) {
+                        finalAmount = payment.amount * (1 - (becaPorcentaje / 100));
+                        originalAmountHtml = `<span class="text-xs line-through text-gray-500 dark:text-gray-400 mr-1 font-normal">${formatMoney(payment.amount)}</span>`;
+                    }
+                    
+                    const item = document.createElement('div');
+                    item.className = `flex flex-col p-4 rounded-xl border border-gray-200 dark:border-uvmBorder hover:border-gray-400 dark:hover:border-gray-500 transition-colors bg-white/50 dark:bg-black/20 ${payment.done ? 'opacity-50 grayscale' : ''}`;
+                    item.innerHTML = `
+                        <label class="flex items-start gap-3 cursor-pointer w-full h-full">
+                            <input type="checkbox" class="custom-checkbox mt-1 shrink-0" data-id="${payment.id}" ${payment.done ? 'checked' : ''}>
+                            <div class="flex flex-col w-full">
+                                <div class="flex justify-between items-start gap-2 mb-1 w-full">
+                                    <span class="font-bold text-sm leading-tight text-gray-800 dark:text-gray-200">${payment.title}</span>
+                                    <span class="font-bold text-sm text-uvmRed whitespace-nowrap bg-uvmRed/10 px-2 py-0.5 rounded-md">
+                                        ${originalAmountHtml}
+                                        ${formatMoney(finalAmount)}
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-1.5 mt-auto text-xs font-medium text-gray-500 dark:text-gray-400">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span>Vence: ${dateStr}</span>
+                                </div>
+                            </div>
+                        </label>
+                    `;
+                    checklistContainer.appendChild(item);
+                });
+
+                document.querySelectorAll('.custom-checkbox').forEach(box => {
+                    box.addEventListener('change', (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        const isChecked = e.target.checked;
+                        
+                        const paymentIndex = payments.findIndex(p => p.id === id);
+                        if (paymentIndex > -1) {
+                            payments[paymentIndex].done = isChecked;
+                            localStorage.setItem('uvm_payments_checklist_v4', JSON.stringify(payments));
+                            
+                            renderChecklist();
+                            updateSemaforo();
+                            renderProgress(); // Actualizamos la barra de progreso
+                        }
+                    });
+                });
+            };
+
+            const updateSemaforo = () => {
+                const nextPayment = payments.find(p => !p.done);
+                
+                semaforoContainer.classList.remove('border-red-500/50', 'border-yellow-500/50', 'border-green-500/50');
+                
+                if (!nextPayment) {
+                    semaforoTitle.innerHTML = `¡Estás al día! <i class="fa-solid fa-check-circle text-green-500"></i>`;
+                    semaforoSubtitle.textContent = "No tienes pagos pendientes registrados. ¡Excelente organización!";
+                    semaforoDot.className = "w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]";
+                    semaforoContainer.classList.add('border-green-500/50');
+                    semaforoBgIcon.className = "fa-solid fa-shield-check text-9xl text-green-500/20";
+                    return;
+                }
+
+                let finalAmount = nextPayment.amount;
+                if (nextPayment.isMensualidad && becaPorcentaje > 0) {
+                    finalAmount = nextPayment.amount * (1 - (becaPorcentaje / 100));
+                }
+
+                const dueDate = new Date(nextPayment.date);
+                const todayMidnight = new Date();
+                todayMidnight.setHours(0,0,0,0);
+                const dueMidnight = new Date(dueDate.getUTCFullYear(), dueDate.getUTCMonth(), dueDate.getUTCDate());
+                
+                const timeDiff = dueMidnight.getTime() - todayMidnight.getTime();
+                const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                const formattedDate = dueDate.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+
+                if (daysLeft < 0) {
+                    semaforoTitle.innerHTML = `Pago <span class="text-uvmRed">Vencido</span>`;
+                    semaforoSubtitle.innerHTML = `Tu pago de <strong>${nextPayment.title}</strong> por <strong>${formatMoney(finalAmount)}</strong> venció el ${formattedDate}.`;
+                    semaforoDot.className = "w-4 h-4 rounded-full bg-uvmRed animate-pulse shadow-[0_0_10px_rgba(227,6,19,0.8)]";
+                    semaforoContainer.classList.add('border-red-500/50');
+                    semaforoBgIcon.className = "fa-solid fa-triangle-exclamation text-9xl text-uvmRed/20";
+                } else if (daysLeft <= 5) {
+                    semaforoTitle.innerHTML = `Te quedan <span class="text-uvmRed">${daysLeft} días</span>`;
+                    semaforoSubtitle.innerHTML = `Tu pago de <strong>${nextPayment.title}</strong> por <strong>${formatMoney(finalAmount)}</strong> vence el ${formattedDate}.`;
+                    semaforoDot.className = "w-4 h-4 rounded-full bg-uvmRed animate-pulse shadow-[0_0_10px_rgba(227,6,19,0.8)]";
+                    semaforoContainer.classList.add('border-red-500/50');
+                    semaforoBgIcon.className = "fa-solid fa-triangle-exclamation text-9xl text-uvmRed/20";
+                } else if (daysLeft <= 15) {
+                    semaforoTitle.innerHTML = `Próximo vencimiento en <span class="text-yellow-500">${daysLeft} días</span>`;
+                    semaforoSubtitle.innerHTML = `Prepara tu pago de <strong>${nextPayment.title}</strong> por <strong>${formatMoney(finalAmount)}</strong> para el ${formattedDate}.`;
+                    semaforoDot.className = "w-4 h-4 rounded-full bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.8)]";
+                    semaforoContainer.classList.add('border-yellow-500/50');
+                    semaforoBgIcon.className = "fa-solid fa-clock-rotate-left text-9xl text-yellow-500/20";
+                } else {
+                    semaforoTitle.innerHTML = `Próximo pago en <span class="text-green-500">${daysLeft} días</span>`;
+                    semaforoSubtitle.innerHTML = `Aún tienes tiempo para tu <strong>${nextPayment.title}</strong> por <strong>${formatMoney(finalAmount)}</strong> (${formattedDate}).`;
+                    semaforoDot.className = "w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]";
+                    semaforoContainer.classList.add('border-green-500/50');
+                    semaforoBgIcon.className = "fa-regular fa-calendar-check text-9xl text-green-500/20";
+                }
+            };
+
+            // NUEVA FUNCIÓN: Barra de progreso interactiva
+            const renderProgress = () => {
+                const progressContainer = document.getElementById('progress-container');
+                if (!progressContainer) return;
+                
+                const total = payments.length;
+                const paid = payments.filter(p => p.done).length;
+                const percentage = total === 0 ? 0 : Math.round((paid / total) * 100);
+
+                let overdueCount = 0;
+                let pendingCount = 0;
+
+                const todayMidnight = new Date();
+                todayMidnight.setHours(0,0,0,0);
+
+                payments.forEach(p => {
+                    if (!p.done) {
+                        const d = new Date(p.date);
+                        const dueMidnight = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+                        if (dueMidnight.getTime() < todayMidnight.getTime()) {
+                            overdueCount++;
+                        } else {
+                            pendingCount++;
+                        }
+                    }
+                });
+
+                // Lógica de Mensajes Motivacionales
+                let motivationMessage = "";
+                let motivationIcon = "";
+                let motivationColor = "";
+
+                if (percentage === 0) {
+                    motivationMessage = "¡Semestre nuevo, metas nuevas! Registra tu primer pago.";
+                    motivationIcon = "fa-rocket";
+                    motivationColor = "text-blue-500";
+                } else if (percentage < 50) {
+                    motivationMessage = "¡Buen comienzo! Mantén el ritmo y asegura tu beca.";
+                    motivationIcon = "fa-fire";
+                    motivationColor = "text-orange-500";
+                } else if (percentage < 100) {
+                    motivationMessage = "¡Ya pasaste la mitad! Sigue así, estás muy cerca.";
+                    motivationIcon = "fa-star";
+                    motivationColor = "text-yellow-500";
+                } else {
+                    motivationMessage = "¡Increíble! Has completado todos tus pagos del semestre. 🎉";
+                    motivationIcon = "fa-trophy";
+                    motivationColor = "text-green-500";
+                }
+
+                progressContainer.innerHTML = `
+                    <div class="flex flex-col gap-3 mb-5">
+                        <div class="flex justify-between items-end">
+                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Tu Avance</span>
+                            <span class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-uvmRed to-red-400 drop-shadow-sm">${percentage}%</span>
+                        </div>
+                        
+                        <!-- Mensaje Motivacional -->
+                        <div class="flex items-center gap-3 bg-black/5 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-uvmBorder shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-white dark:bg-black/50 flex items-center justify-center shrink-0 shadow-inner">
+                                <i class="fa-solid ${motivationIcon} ${motivationColor} animate-bounce"></i>
+                            </div>
+                            <p class="text-sm font-medium opacity-90 text-gray-800 dark:text-gray-200">${motivationMessage}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Barra de Progreso Mejorada -->
+                    <div class="w-full bg-gray-200 dark:bg-[#151515] rounded-full h-6 mb-6 overflow-hidden border border-gray-300 dark:border-gray-700 shadow-inner relative">
+                        <div class="h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden flex items-center justify-end px-3 bg-gradient-to-r from-red-700 via-uvmRed to-red-400 shadow-[0_0_15px_rgba(227,6,19,0.5)]" style="width: ${percentage > 0 ? percentage : 0}%">
+                            <!-- Animación de rayas interactiva -->
+                            <div class="absolute inset-0 w-full h-full opacity-30" style="background-image: linear-gradient(-45deg, rgba(255,255,255,.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.2) 50%, rgba(255,255,255,.2) 75%, transparent 75%, transparent); background-size: 20px 20px; animation: moveStripes 1s linear infinite;"></div>
+                            ${percentage > 10 ? `<i class="fa-solid fa-bolt text-white/80 text-xs drop-shadow-md relative z-10"></i>` : ''}
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjetas de Estadísticas (Estilo Dashboard Premium) -->
+                    <div class="grid grid-cols-3 gap-3 mt-2">
+                        <!-- Tarjeta Pagados -->
+                        <div class="relative overflow-hidden flex flex-col items-center justify-center py-4 px-2 rounded-xl bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/10 border border-green-200 dark:border-green-800 shadow-sm transition-all hover:scale-105 hover:shadow-green-500/20 group">
+                            <i class="fa-solid fa-check-circle absolute -right-2 -bottom-2 text-5xl text-green-500/10 dark:text-green-400/5 group-hover:scale-110 transition-transform duration-300"></i>
+                            <span class="text-3xl font-extrabold text-green-600 dark:text-green-400 leading-none mb-1 z-10">${paid}</span>
+                            <span class="text-[10px] uppercase font-bold text-green-700 dark:text-green-500 text-center tracking-wider z-10">Pagados</span>
+                        </div>
+                        
+                        <!-- Tarjeta Pendientes -->
+                        <div class="relative overflow-hidden flex flex-col items-center justify-center py-4 px-2 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/40 dark:to-gray-900/20 border border-gray-200 dark:border-gray-700 shadow-sm transition-all hover:scale-105 hover:shadow-md group">
+                            <i class="fa-solid fa-hourglass-half absolute -right-2 -bottom-2 text-5xl text-gray-500/5 dark:text-gray-400/5 group-hover:scale-110 transition-transform duration-300"></i>
+                            <span class="text-3xl font-extrabold text-gray-600 dark:text-gray-300 leading-none mb-1 z-10">${pendingCount}</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400 text-center tracking-wider z-10">Pendientes</span>
+                        </div>
+                        
+                        <!-- Tarjeta Vencidos -->
+                        <div class="relative overflow-hidden flex flex-col items-center justify-center py-4 px-2 rounded-xl ${overdueCount > 0 ? 'bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/40 dark:to-red-800/20 border-red-300 dark:border-red-800 shadow-lg shadow-red-500/20 animate-pulse' : 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/30 dark:to-gray-900/10 border-gray-100 dark:border-gray-800/50 shadow-sm'} border transition-all hover:scale-105 group">
+                            <i class="fa-solid fa-triangle-exclamation absolute -right-2 -bottom-2 text-5xl ${overdueCount > 0 ? 'text-red-500/10 dark:text-red-400/10' : 'text-gray-500/5'} group-hover:scale-110 transition-transform duration-300"></i>
+                            <span class="text-3xl font-extrabold leading-none mb-1 z-10 ${overdueCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400 dark:text-gray-600'}">${overdueCount}</span>
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-center z-10 ${overdueCount > 0 ? 'text-red-700 dark:text-red-500' : 'text-gray-400 dark:text-gray-600'}">Vencidos</span>
+                        </div>
+                    </div>
+                `;
+            };
+
+            // Inicializar la aplicación
+            renderChecklist();
+            updateSemaforo();
+            renderProgress();
+        });
+    </script>
+</body>
+</html>

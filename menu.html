@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONA UVM - Panel de Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Variables Globales */
+        :root {
+            --red-uvm: #E30613;
+            --white: #FFFFFF;
+            --pure-black: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --soft-gray: #A0A0A0;
+            --border-color: #333333;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            
+            /* Antiguas variables fusionadas */
+            --uvmRed: #E30613;
+            --uvmDark: #0A0A0A;
+            --uvmBorder: #333333;
+            --uvmGray: #A0A0A0;
+        }
+
+        body.light-mode {
+            --pure-black: #F5F5F7;
+            --white: #ff2b2b;
+            --card-bg: #FFFFFF;
+            --soft-gray: #666666;
+            --border-color: #DDDDDD;
+            --bg-color: #F5F5F7;
+            --text-color: #1A1A1A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Top Bar Header */
+        .glass-header-nav {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--uvmBorder);
+            width: 100%;
+            padding: 1rem 1.5rem;
+        }
+
+        body.light-mode .glass-header-nav {
+            background: rgba(245, 245, 247, 0.85);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(160, 160, 160, 0.1);
+            border: 1px solid transparent;
+        }
+
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            border-color: var(--red-uvm);
+            color: var(--red-uvm);
+            transform: translateX(-5px);
+        }
+
+        .header-logo-small {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .header-logo-small span {
+            color: var(--red-uvm);
+        }
+
+        /* Main Nav Header */
+        header.main-header {
+            background-color: var(--bg-color);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--red-uvm);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo span { color: var(--text-color); }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 15px;
+            background: rgba(227, 6, 19, 0.1);
+            border-radius: 20px;
+            color: var(--red-uvm);
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Secciones */
+        .section {
+            padding: 40px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-banner {
+            background: linear-gradient(90deg, var(--red-uvm), #9c040d);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+        }
+
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .restaurant-title-group {
+            border-left: 5px solid var(--red-uvm);
+            padding-left: 20px;
+        }
+
+        .restaurant-title {
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .restaurant-hours {
+            font-size: 0.85rem;
+            color: var(--red-uvm);
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--red-uvm);
+            color: white;
+            border-color: var(--red-uvm);
+        }
+
+        /* Grid de Menú */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .menu-item {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+        }
+
+        .item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .item-content { padding: 1.2rem; flex-grow: 1; }
+
+        .item-description {
+            font-size: 0.85rem;
+            color: var(--soft-gray);
+            margin-top: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .item-footer {
+            padding: 1rem 1.2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .price-tag {
+            color: var(--red-uvm);
+            font-size: 1.2rem;
+        }
+
+        /* Controles de Admin */
+        .admin-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+
+        .btn-action:hover { transform: scale(1.1); }
+        .btn-edit { background: #3498db; }
+        .btn-delete { background: var(--red-uvm); }
+
+        .add-card {
+            border: 2px dashed var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            cursor: pointer;
+            color: var(--soft-gray);
+            border-radius: 15px;
+            transition: var(--transition);
+            gap: 10px;
+        }
+
+        .add-card:hover {
+            border-color: var(--red-uvm);
+            color: var(--red-uvm);
+            background: rgba(227, 6, 19, 0.05);
+        }
+
+        /* Modales */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 8px; color: var(--soft-gray); font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--red-uvm); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--red-uvm);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover { background: var(--border-color); }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .restaurant-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .restaurant-title { font-size: 1.5rem; }
+        }
+    </style>
+    
+</head>
+<body class="dark-mode">
+
+    <!-- Indicador de Admin -->
+    <div id="admin-indicator" class="admin-banner hidden">
+        <i class="fas fa-tools"></i> MODO ADMINISTRADOR ACTIVADO
+    </div>
+
+    <!-- Navegación Unificada -->
+    <header class="glass-header-nav" style="position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem;">
+        <div class="nav-container-top" style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            
+            <!-- Izquierda: Botón Volver -->
+            <div style="flex: 1; display: flex; justify-content: flex-start;">
+                <a href="index.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Volver</span>
+                </a>
+            </div>
+
+            <!-- Centro: Logo -->
+            <div style="flex: 1; display: flex; justify-content: center;">
+                <a href="#" class="header-logo-small" style="font-size: 1.5rem;">
+                    ZONA<span>UVM</span>
+                </a>
+            </div>
+
+            <!-- Derecha: Controles -->
+            <div class="nav-controls" style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
+                <button class="btn-icon" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                
+                <div id="auth-display">
+                    <button class="btn-icon" onclick="openAuth()"><i class="fas fa-user-circle"></i></button>
+                </div>
+
+                <div style="width: 32px; height: 32px; background: var(--red-uvm); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Contenido dinámico renderizado por JS -->
+    </main>
+
+    <!-- MODAL AUTH -->
+    <div id="modal-auth" class="modal">
+        <div class="modal-content">
+            <h2 id="auth-title" style="margin-bottom: 1.5rem;">Acceso de Administrador</h2>
+            <form id="form-auth">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="auth-user" required placeholder="admin">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="auth-pass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit" id="btn-auth-action">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PRODUCTO -->
+    <div id="modal-product" class="modal">
+        <div class="modal-content">
+            <h3 id="product-modal-title">Gestionar Platillo</h3><br>
+            <form id="form-product">
+                <input type="hidden" id="edit-rest-id">
+                <input type="hidden" id="edit-prod-id">
+                <div class="form-group">
+                    <label>Nombre del Platillo</label>
+                    <input type="text" id="p-name" required placeholder="Ej: Hamburguesa Especial">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="p-desc" placeholder="Ingredientes, porción, etc."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Precio ($MXN)</label>
+                    <input type="number" id="p-price" required placeholder="80" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Imagen (Link Directo)</label>
+                    <input type="url" id="p-img" required placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
+                <button type="submit" class="btn-submit">Guardar en el Menú</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVO RESTAURANTE -->
+    <div id="modal-restaurant" class="modal">
+        <div class="modal-content">
+            <h3>Registrar Nuevo Local</h3><br>
+            <form id="form-restaurant">
+                <div class="form-group">
+                    <label>Nombre del Establecimiento</label>
+                    <input type="text" id="r-name" required placeholder="Ej: Tacos El Güero">
+                </div>
+                <div class="form-group">
+                    <label>Breve Descripción</label>
+                    <input type="text" id="r-slogan" required placeholder="Ej: Los mejores de la zona">
+                </div>
+                <div class="form-group">
+                    <label>Horario de Atención</label>
+                    <input type="text" id="r-hours" required placeholder="Ej: Lunes a Viernes: 8:00 AM - 4:00 PM">
+                </div>
+                <button type="submit" class="btn-submit">Dar de Alta Local</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMACIÓN -->
+    <div id="modal-confirm" class="modal">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <div style="font-size: 3rem; color: var(--red-uvm); margin-bottom: 1rem;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 id="confirm-title" style="margin-bottom: 10px;">¿Estás seguro?</h3>
+            <p id="confirm-message" style="color: var(--soft-gray); margin-bottom: 25px; line-height: 1.5;"></p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="btn-confirm-cancel" class="btn-secondary" style="flex: 1;">Cancelar</button>
+                <button id="btn-confirm-ok" class="btn-submit" style="flex: 1; margin: 0;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+    //<!-- 1. Configuración de Tailwind CSS         
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        uvmRed: '#E30613',
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    }
+                }
+            }
+        }
+        // --- DATA ---
+        let currentUser = null;
+        let activeFilters = {}; // Almacena el filtro activo de cada restaurante
+        
+        let restaurants = {
+            gugo: {
+                name: "Gugo",
+                slogan: "Sabor de hogar en cada bocado",
+                hours: "Lunes a Viernes: 8:00 AM - 5:00 PM",
+                items: [
+                    { id: 1, name: "Chilaquiles Rojos", desc: "Servidos con crema, queso, cebolla y un toque de habanero. Incluye frijoles refritos.", price: 85, img: "https://cocinamia.com.mx/wp-content/uploads/2019/06/Sin-t%C3%ADtulo-2-08-1100x500.png" },
+                    { id: 3, name: "Torta de Milanesa", desc: "Bolillo crujiente con milanesa de res, aguacate, jitomate, cebolla y mayonesa.", price: 65, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgOy9EQa5foQyra7d3xmIGaCNVyQjMEzlIDQ&s" },
+                    { id: 4, name: "Enchiladas Suizas", desc: "4 enchiladas rellenas de pollo con salsa verde cremosa y queso gratinado.", price: 95, img: "https://cdn7.kiwilimon.com/recetaimagen/26245/640x640/38984.jpg.jpg" }
+                ]
+            },
+            delishus: {
+                name: "Delishus",
+                slogan: "Sano, fresco y natural",
+                hours: "Lunes a Viernes: 7:00 AM - 4:00 PM",
+                items: [
+                    { id: 2, name: "Ensalada Cesar", desc: "Lechuga orejona fresca, crotones, queso parmesano y el aderezo secreto de la casa.", price: 95, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500" },
+                    { id: 5, name: "Smoothie de Berries", desc: "Mezcla de fresas, moras y frambuesas con yogurt griego sin azúcar.", price: 55, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMMr3LiaiwC8X5-pD9Qei4NU1aobZmzdHeZA&s" },
+                    { id: 6, name: "Panini de Pavo", desc: "Pan artesanal, jamón de pavo, queso gouda y espinacas con aderezo chipotle.", price: 80, img: "https://adamsfarms.com/wp-content/uploads/2021/10/Smoked-Turkey-and-Brie-Panini.png" }
+                ]
+            },
+            kingu_sushi: {
+                name: "Kingu Sushi",
+                slogan: "El rey del sushi en el campus",
+                hours: "Lunes a Jueves: 11:00 AM - 6:00 PM",
+                items: [
+                    { id: 7, name: "California Roll", desc: "Pepino, aguacate y surimi por dentro. Cubierto de ajonjolí.", price: 110, img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500" },
+                    { id: 8, name: "Yakimeshi Especial", desc: "Arroz frito con verduras, carne, pollo y camarón. Incluye queso crema.", price: 85, img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500" },
+                    { id: 9, name: "Empanizado Roll", desc: "Rollo frito relleno de camarón, queso crema y aguacate. Servido con salsa anguila.", price: 125, img: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=500" }
+                ]
+            }
+        };
+
+        // --- SISTEMA DE CONFIRMACIÓN PERSONALIZADO ---
+        let currentConfirmAction = null;
+
+        function showConfirm(title, message, callback) {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-message').innerText = message;
+            document.getElementById('modal-confirm').style.display = 'flex';
+            currentConfirmAction = callback;
+        }
+
+        document.getElementById('btn-confirm-cancel').onclick = () => {
+            document.getElementById('modal-confirm').style.display = 'none';
+            currentConfirmAction = null;
+        };
+
+        document.getElementById('btn-confirm-ok').onclick = () => {
+            document.getElementById('modal-confirm').style.display = 'none';
+            if (currentConfirmAction) currentConfirmAction();
+            currentConfirmAction = null;
+        };
+
+        // --- RENDER ---
+        function render() {
+            const main = document.getElementById('main-content');
+            main.innerHTML = '';
+
+            // BOTÓN ADMIN PARA NUEVO RESTAURANTE
+            if(currentUser?.role === 'admin') {
+                const addSection = document.createElement('div');
+                addSection.className = 'section';
+                addSection.style.padding = '20px';
+                addSection.innerHTML = `
+                    <div class="add-card" style="min-height: 100px; flex-direction: row; border-style: solid; border-width: 1px;" onclick="openNewRestModal()">
+                        <i class="fas fa-plus-circle" style="font-size: 1.5rem"></i> 
+                        <strong style="text-transform: uppercase">Registrar Nuevo Establecimiento en la Guía</strong>
+                    </div>
+                `;
+                main.appendChild(addSection);
+            }
+
+            Object.keys(restaurants).forEach(id => {
+                const rest = restaurants[id];
+                
+                // Inicializar filtro en 'all' si no existe
+                if (!activeFilters[id]) activeFilters[id] = 'all';
+
+                // Lógica de filtrado
+                let filteredItems = rest.items;
+                if (activeFilters[id] === 'economic') {
+                    filteredItems = rest.items.filter(item => item.price <= 80);
+                } else if (activeFilters[id] === 'medium') {
+                    filteredItems = rest.items.filter(item => item.price > 80);
+                }
+
+                const section = document.createElement('section');
+                section.className = 'section';
+                
+                let cardsHTML = filteredItems.map(item => `
+                    <div class="menu-item">
+                        ${currentUser?.role === 'admin' ? `
+                            <div class="admin-actions">
+                                <button class="btn-action btn-edit" onclick="editProduct('${id}', ${item.id})" title="Editar"><i class="fas fa-pen"></i></button>
+                                <button class="btn-action btn-delete" onclick="deleteProduct('${id}', ${item.id})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                            </div>
+                        ` : ''}
+                        <img src="${item.img}" class="item-image" onerror="this.src='https://via.placeholder.com/300x200?text=Comida+UVM'">
+                        <div class="item-content">
+                            <h3 style="margin-bottom: 5px">${item.name}</h3>
+                            <p class="item-description">${item.desc || 'Sin descripción disponible.'}</p>
+                        </div>
+                        <div class="item-footer">
+                            <span class="price-tag">$${item.price}</span>
+                            <button class="btn-icon" style="color: #25D366" onclick="orderWhatsApp('${item.name}', '${rest.name}')" title="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp fa-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Mensaje si no hay resultados en el filtro
+                if (filteredItems.length === 0) {
+                    cardsHTML = `<p style="color: var(--soft-gray); grid-column: 1 / -1; padding: 20px 0;">No hay platillos en esta categoría de precio.</p>`;
+                }
+
+                section.innerHTML = `
+                    <div class="restaurant-header">
+                        <div class="restaurant-title-group">
+                            <h2 class="restaurant-title">${rest.name}</h2>
+                            <p style="color: var(--soft-gray); font-style: italic;">"${rest.slogan}"</p>
+                            <p class="restaurant-hours"><i class="far fa-clock"></i> ${rest.hours}</p>
+                            
+                            <div class="filter-container">
+                                <button class="filter-btn ${activeFilters[id] === 'all' ? 'active' : ''}" onclick="setFilter('${id}', 'all')">Todos</button>
+                                <button class="filter-btn ${activeFilters[id] === 'economic' ? 'active' : ''}" onclick="setFilter('${id}', 'economic')">Económico (≤$80)</button>
+                                <button class="filter-btn ${activeFilters[id] === 'medium' ? 'active' : ''}" onclick="setFilter('${id}', 'medium')">Medio (>$80)</button>
+                            </div>
+                        </div>
+                        ${currentUser?.role === 'admin' ? `
+                            <button onclick="removeRestaurant('${id}')" style="background:none; color:var(--red-uvm); border:none; cursor:pointer; font-weight:bold; font-size: 0.8rem">
+                                <i class="fas fa-store-slash"></i> ELIMINAR LOCAL
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="menu-grid">
+                        ${cardsHTML}
+                        ${currentUser?.role === 'admin' ? `
+                            <div class="add-card" onclick="addProduct('${id}')">
+                                <i class="fas fa-plus"></i> 
+                                <span style="font-weight:bold">Añadir Platillo</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                main.appendChild(section);
+            });
+        }
+
+        // --- FUNCIONES DE ACCIÓN ---
+        function setFilter(restId, type) {
+            activeFilters[restId] = type;
+            render();
+        }
+
+        function orderWhatsApp(item, store) {
+            const text = encodeURIComponent(`¡Hola! Me gustaría pedir un ${item} de ${store}. ¿Me pueden dar información?`);
+            window.open(`https://wa.me/3312111961?text=${text}`, '_blank');
+        }
+
+        // --- LOGICA DE TEMA (CLARO/OSCURO) ---
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            
+            // Cambiar ícono
+            if(body.classList.contains('light-mode')) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // --- MODALES Y LOGICA RESTAURANTE ---
+        function openNewRestModal() {
+            document.getElementById('form-restaurant').reset();
+            document.getElementById('modal-restaurant').style.display = 'flex';
+        }
+
+        document.getElementById('form-restaurant').onsubmit = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('r-name').value;
+            const slogan = document.getElementById('r-slogan').value;
+            const hours = document.getElementById('r-hours').value;
+            const id = name.toLowerCase().trim().replace(/\s+/g, '_');
+
+            if(restaurants[id]) {
+                alert("Ya existe un restaurante con ese nombre");
+                return;
+            }
+
+            restaurants[id] = {
+                name: name,
+                slogan: slogan,
+                hours: hours,
+                items: []
+            };
+
+            document.getElementById('modal-restaurant').style.display = 'none';
+            render();
+        };
+
+        function removeRestaurant(id) {
+            showConfirm(
+                "Eliminar Local",
+                `¿Estás seguro de eliminar el restaurante "${restaurants[id].name}"? Esta acción borrará permanentemente todos sus platillos.`,
+                () => {
+                    delete restaurants[id];
+                    render();
+                }
+            );
+        }
+
+        // --- AUTH LOGIC ---
+        function openAuth() { 
+            if(currentUser) logout();
+            else {
+                document.getElementById('form-auth').reset();
+                document.getElementById('modal-auth').style.display = 'flex'; 
+            }
+        }
+
+        document.getElementById('form-auth').onsubmit = (e) => {
+            e.preventDefault();
+            const user = document.getElementById('auth-user').value;
+            const pass = document.getElementById('auth-pass').value;
+            
+            // Validación estricta solicitada
+            if(user === 'admin' && pass === '123') {
+                currentUser = { role: 'admin' };
+                document.getElementById('modal-auth').style.display = 'none';
+                document.getElementById('admin-indicator').classList.remove('hidden');
+                
+                updateAuthUI();
+                render();
+            } else {
+                alert('Usuario o contraseña incorrectos.');
+            }
+        };
+
+        function updateAuthUI() {
+            const div = document.getElementById('auth-display');
+            div.innerHTML = `
+                <div class="user-badge" onclick="logout()" title="Cerrar sesión" style="background: var(--red-uvm); color: white;">
+                    <i class="fas fa-user-shield"></i>
+                    <span>ADMIN | CERRAR SESIÓN</span>
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+            `;
+        }
+
+        function logout() {
+            showConfirm(
+                "Cerrar Sesión",
+                "¿Deseas cerrar sesión y salir del modo administrador?",
+                () => {
+                    currentUser = null;
+                    document.getElementById('admin-indicator').classList.add('hidden');
+                    document.getElementById('auth-display').innerHTML = `<button class="btn-icon" onclick="openAuth()"><i class="fas fa-user-circle"></i></button>`;
+                    render();
+                    document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            );
+        }
+
+        // --- PRODUCT LOGIC ---
+        function addProduct(restId) {
+            document.getElementById('form-product').reset();
+            document.getElementById('product-modal-title').innerText = "Añadir al Menú";
+            document.getElementById('edit-rest-id').value = restId;
+            document.getElementById('edit-prod-id').value = "";
+            document.getElementById('modal-product').style.display = 'flex';
+        }
+
+        function editProduct(restId, prodId) {
+            const item = restaurants[restId].items.find(i => i.id === prodId);
+            document.getElementById('product-modal-title').innerText = "Editar Platillo";
+            document.getElementById('edit-rest-id').value = restId;
+            document.getElementById('edit-prod-id').value = prodId;
+            
+            document.getElementById('p-name').value = item.name;
+            document.getElementById('p-desc').value = item.desc || "";
+            document.getElementById('p-price').value = item.price;
+            document.getElementById('p-img').value = item.img;
+            document.getElementById('modal-product').style.display = 'flex';
+        }
+
+        function deleteProduct(restId, prodId) {
+            showConfirm(
+                "Eliminar Platillo",
+                "¿Estás seguro de que deseas eliminar este platillo del menú?",
+                () => {
+                    restaurants[restId].items = restaurants[restId].items.filter(i => i.id !== prodId);
+                    render();
+                }
+            );
+        }
+
+        // COMPLEMENTO AL CÓDIGO CORTADO: Formulario de guardado/edición de producto
+        document.getElementById('form-product').onsubmit = (e) => {
+            e.preventDefault();
+            const rId = document.getElementById('edit-rest-id').value;
+            const pId = document.getElementById('edit-prod-id').value;
+            
+            const name = document.getElementById('p-name').value;
+            const desc = document.getElementById('p-desc').value;
+            const price = parseFloat(document.getElementById('p-price').value);
+            const img = document.getElementById('p-img').value;
+
+            if (pId) {
+                // Modo Edición
+                const itemIndex = restaurants[rId].items.findIndex(i => i.id == pId);
+                if (itemIndex > -1) {
+                    restaurants[rId].items[itemIndex] = {
+                        id: parseInt(pId),
+                        name: name,
+                        desc: desc,
+                        price: price,
+                        img: img
+                    };
+                }
+            } else {
+                // Modo Nuevo Platillo
+                const newId = Date.now(); // Genera un ID simple basado en el timestamp
+                restaurants[rId].items.push({
+                    id: newId,
+                    name: name,
+                    desc: desc,
+                    price: price,
+                    img: img
+                });
+            }
+
+            // Ocultar modal y volver a pintar UI
+            document.getElementById('modal-product').style.display = 'none';
+            render();
+        };
+
+        // Cerrar modales al hacer clic fuera de ellos
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Renderizado inicial
+        render();
+
+
+    </script>
+    
+    <!-- ========================================== -->
+    <!-- 2. Estructura HTML del Footer              -->
+    <!-- ========================================== -->
+    <footer class="border-t border-gray-300 dark:border-uvmBorder py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-uvmGray text-sm font-sans">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+            <div class="flex space-x-6"></div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- 3. Lógica de Sincronización de Tema        -->
+    <!-- ========================================== -->
+    <script>
+        (function() {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            function syncTailwindDarkMode() {
+                // Ajusta 'light-mode' si mi página usa otra clase para el tema claro
+                if (bodyEl.classList.contains('light-mode')) {
+                    htmlEl.classList.remove('dark');
+                } else {
+                    htmlEl.classList.add('dark');
+                }
+            }
+
+            syncTailwindDarkMode();
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        syncTailwindDarkMode();
+                    }
+                });
+            });
+
+            observer.observe(bodyEl, { attributes: true });
+        })();
+    </script>
+
+</body>
+</html>

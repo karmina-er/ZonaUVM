@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONA UVM - Ecosistema Digital</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        uvmRed: '#E30613',
+                        uvmDark: '#0A0A0A',
+                        uvmCard: '#1A1A1A',
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0A0A0A;
+            background-image: radial-gradient(circle at top right, #2a0507 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, #1a1a1a 0%, transparent 40%);
+            background-attachment: fixed;
+            color: white;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-header {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #333333;
+        }
+
+        .service-card {
+            background: #1A1A1A;
+            border: 1px solid #333333;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: #E30613;
+            box-shadow: 0 10px 30px rgba(227, 6, 19, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E30613;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- NAV / HEADER -->
+    <header class="glass-header sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-extrabold tracking-tighter">
+                ZONA<span class="text-uvmRed">UVM</span>
+            </div>
+            <!-- Navegación central eliminada según solicitud -->
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium text-uvmGray hidden sm:inline">Bienvenido, Lince</span>
+                <div class="w-10 h-10 bg-uvmRed rounded-full flex items-center justify-center shadow-lg shadow-red-900/20">
+                    <i class="fas fa-user-graduate text-white"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="max-w-7xl mx-auto px-6 pt-16 pb-12 text-center fade-in">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+            TU VIDA UNIVERSITARIA<br>
+            <span class="text-uvmRed underline decoration-4 underline-offset-8">SIMPLIFICADA</span>
+        </h1>
+        <p class="text-uvmGray text-lg md:text-xl max-w-2xl mx-auto mb-10">
+            Accede a todas las herramientas digitales de la ZONA UVM en un solo lugar. Eficiencia para linces de alto rendimiento.
+        </p>
+    </section>
+
+    <!-- GRID DE SERVICIOS -->
+    <main id="servicios" class="max-w-7xl mx-auto px-6 pb-24">
+        
+        <!-- SECCIÓN 1: VIDA EN CAMPUS (4 Tarjetas Rojas) -->
+        <div class="mb-14">
+            <div class="flex items-center gap-3 mb-8 fade-in">
+                <div class="w-2 h-8 bg-uvmRed rounded-full shadow-[0_0_10px_rgba(227,6,19,0.5)]"></div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide uppercase">Vida en Campus</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Tarjeta 1: Chatbot (Local) -->
+                <a href="Chatbot_de_consejos.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.1s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-robot text-3xl text-uvmRed"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Chatbot de Consejos</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Resuelve tus dudas académicas, ubica tus salones y obtén información de trámites al instante con el asistente inteligente.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Abrir Asistente <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 2: Mapa Interactivo (Local) -->
+                <a href="mapa.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.2s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-map-location-dot text-3xl text-uvmRed"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Mapa Interactivo</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Explora el campus Guadalajara Sur, encuentra cafeterías, laboratorios y traza tu ruta fácilmente por la zona.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ver Mapa <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 3: Menú de Alimentos (Local) -->
+                <a href="menu.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.3s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-utensils text-3xl text-uvmRed"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Menú de Alimentos</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Consulta las opciones de comida disponibles en las cafeterías, precios del día y promociones para estudiantes.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ver Menú <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 4: Mi Horario (Local) -->
+                <a href="horario 5.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.4s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-calendar-days text-3xl text-uvmRed"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Mi Horario</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Revisa tus clases, salones, profesores y horarios de la semana actual de manera rápida y organizada.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-uvmRed font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Consultar Horario <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: PLATAFORMAS INSTITUCIONALES (4 Tarjetas Blancas) -->
+        <div>
+            <div class="flex items-center gap-3 mb-8 fade-in" style="animation-delay: 0.4s;">
+                <div class="w-2 h-8 bg-white/80 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.3)]"></div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide uppercase">Plataformas Institucionales</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Tarjeta 5: Directorio de Coordinaciones (Ajustado a estética blanca) -->
+                <a href="directorio.html" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.5s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-address-book text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Directorio UVM</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Encuentra rápidamente los correos, ubicación de oficinas y contactos de tus coordinadores académicos.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ver Directorio <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 6: Blackboard (Externo) -->
+                <a href="https://uvmonline.blackboard.com/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.6s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-laptop-code text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Blackboard</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Tu plataforma virtual. Entrega tareas, participa en foros y revisa tus materiales de clase 24/7.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Ir a mis Tareas <i class="fa-solid fa-external-link-alt ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 7: Biblioteca (Externo) -->
+                <a href="https://bibliotecas.uvmnet.edu/portico/gui/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.7s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-book-bookmark text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Biblioteca Digital</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Acceso a bases de datos científicas, libros electrónicos y recursos de investigación para tus proyectos.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Buscar Recursos <i class="fa-solid fa-external-link-alt ml-2"></i>
+                    </div>
+                </a>
+
+                <!-- Tarjeta 8: Portal (Externo) -->
+                <a href="https://conexionlince.uvm.mx/" target="_blank" class="service-card group rounded-2xl p-8 flex flex-col h-full fade-in" style="animation-delay: 0.8s;">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-address-card text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Servicios en Línea</h3>
+                    <p class="text-uvmGray text-sm leading-relaxed mb-6 flex-grow">
+                        Consulta de calificaciones, historial académico, estados de cuenta y reinscripciones oficiales.
+                    </p>
+                    <div class="pt-4 border-t border-uvmBorder flex items-center text-white font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                        Mi Cuenta <i class="fa-solid fa-external-link-alt ml-2"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: HERRAMIENTAS ESTUDIANTILES (Listado Dinámico) -->
+        <div class="mt-14">
+            <div class="flex items-center gap-3 mb-8 fade-in" style="animation-delay: 0.9s;">
+                <div class="w-2 h-8 bg-uvmRed rounded-full shadow-[0_0_10px_rgba(227,6,19,0.5)]"></div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide uppercase">Herramientas Estudiantiles</h2>
+            </div>
+
+            <!-- Contenedor en columna para romper el patrón de cuadritos -->
+            <div class="flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-col gap-4">
+                
+                <!-- Herramienta 9: Control de Pagos -->
+                <a href="pagos.html" class="group relative overflow-hidden rounded-2xl bg-[#1A1A1A] border border-[#333333] p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 transition-all duration-300 hover:border-uvmRed hover:shadow-[0_0_20px_rgba(227,6,19,0.15)] hover:-translate-y-1 fade-in" style="animation-delay: 1.0s;">
+                    <div class="absolute inset-0 bg-gradient-to-r from-red-900/0 via-red-900/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="relative z-10 w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:bg-uvmRed transition-colors duration-300">
+                        <i class="fa-solid fa-money-check-dollar text-2xl sm:text-3xl text-uvmRed group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    
+                    <div class="relative z-10 flex-grow">
+                        <h3 class="text-lg sm:text-xl font-bold mb-1 text-white">Control de Pagos</h3>
+                        <p class="text-uvmGray text-sm leading-relaxed">Organiza y prevee los pagos de tus colegiaturas y trámites de manera anticipada.</p>
+                    </div>
+
+                    <div class="relative z-10 hidden sm:flex shrink-0 w-12 h-12 rounded-full border border-uvmBorder items-center justify-center group-hover:border-uvmRed group-hover:bg-uvmRed transition-all duration-300">
+                        <i class="fa-solid fa-arrow-right text-uvmGray group-hover:text-white transition-colors"></i>
+                    </div>
+                </a>
+
+                <!-- Herramienta 10: Objetos Perdidos -->
+                <a href="objetos_perdidos.html" class="group relative overflow-hidden rounded-2xl bg-[#1A1A1A] border border-[#333333] p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 transition-all duration-300 hover:border-uvmRed hover:shadow-[0_0_20px_rgba(227,6,19,0.15)] hover:-translate-y-1 fade-in" style="animation-delay: 1.1s;">
+                    <div class="absolute inset-0 bg-gradient-to-r from-red-900/0 via-red-900/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="relative z-10 w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:bg-uvmRed transition-colors duration-300">
+                        <i class="fa-solid fa-box-open text-2xl sm:text-3xl text-uvmRed group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    
+                    <div class="relative z-10 flex-grow">
+                        <h3 class="text-lg sm:text-xl font-bold mb-1 text-white">Reporte de Objetos Perdidos</h3>
+                        <p class="text-uvmGray text-sm leading-relaxed">¿Olvidaste algo en el campus? Repórtalo o revisa si alguien ya lo ha encontrado.</p>
+                    </div>
+
+                    <div class="relative z-10 hidden sm:flex shrink-0 w-12 h-12 rounded-full border border-uvmBorder items-center justify-center group-hover:border-uvmRed group-hover:bg-uvmRed transition-all duration-300">
+                        <i class="fa-solid fa-arrow-right text-uvmGray group-hover:text-white transition-colors"></i>
+                    </div>
+                </a>
+
+                <!-- Herramienta 11: Calculadora de Promedio -->
+                <a href="calculadora/calculadora.html" class="group relative overflow-hidden rounded-2xl bg-[#1A1A1A] border border-[#333333] p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 transition-all duration-300 hover:border-uvmRed hover:shadow-[0_0_20px_rgba(227,6,19,0.15)] hover:-translate-y-1 fade-in" style="animation-delay: 1.2s;">
+                    <div class="absolute inset-0 bg-gradient-to-r from-red-900/0 via-red-900/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="relative z-10 w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-red-900/20 rounded-xl flex items-center justify-center group-hover:bg-uvmRed transition-colors duration-300">
+                        <i class="fa-solid fa-calculator text-2xl sm:text-3xl text-uvmRed group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    
+                    <div class="relative z-10 flex-grow">
+                        <h3 class="text-lg sm:text-xl font-bold mb-1 text-white">Calculadora de Promedio</h3>
+                        <p class="text-uvmGray text-sm leading-relaxed">Descubre rápidamente cuánto necesitas sacar en tus próximos parciales para evitar irte a examen final.</p>
+                    </div>
+
+                    <div class="relative z-10 hidden sm:flex shrink-0 w-12 h-12 rounded-full border border-uvmBorder items-center justify-center group-hover:border-uvmRed group-hover:bg-uvmRed transition-all duration-300">
+                        <i class="fa-solid fa-arrow-right text-uvmGray group-hover:text-white transition-colors"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-uvmBorder py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-uvmGray text-sm">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+            <div class="flex space-x-6">
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

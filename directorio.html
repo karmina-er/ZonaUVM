@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Supervivencia Lince - UVM</title>
+    
+    <!-- Dependencias Inyectadas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración de Tailwind para ZONA UVM -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        uvmRed: '#E30613',
+                        uvmBorder: '#333333',
+                        uvmGray: '#A0A0A0'
+                    },
+                    fontFamily: {
+                        // Aseguramos que la clase font-sans del footer herede Montserrat
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Variables de ZONA UVM (Por defecto Oscuro) */
+            --uvmRed: #E30613;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --border-color: #333333;
+            --header-bg: rgba(10, 10, 10, 0.85);
+            --transition: all 0.3s ease;
+            
+            /* Compatibilidad con contenido previo */
+            --rojo-uvm: var(--uvmRed);
+            --negro-lince: var(--text-color);
+            --gris-texto: #b0b0b0;
+            --blanco: #1e1e1e;
+            --bg-light: #151515;
+            --card-bg: #141414;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.6);
+            --shadow-hover: 0 10px 30px rgba(227, 6, 19, 0.15);
+        }
+
+        /* Modo Claro */
+        body.light-mode {
+            --bg-color: #F3F4F6;
+            --text-color: #111827;
+            --border-color: #E5E7EB;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            
+            /* Sobreescritura compatibilidad */
+            --gris-texto: #4d4d4d;
+            --blanco: #ffffff;
+            --bg-light: #f9fafb;
+            --card-bg: #ffffff;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
+            --shadow-hover: 0 10px 30px rgba(227, 6, 19, 0.1);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            transition: var(--transition);
+        }
+
+        /* --- Estilos del Encabezado ZONA UVM --- */
+        .glass-header-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(128, 128, 128, 0.1);
+            border-radius: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            color: var(--uvmRed);
+            transform: translateX(-5px);
+        }
+
+        .header-logo-small {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .header-logo-small span {
+            color: var(--uvmRed);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--uvmRed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        /* --- Estilos del Directorio Refinados --- */
+        .directorio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            padding-top: 10px;
+        }
+
+        .tarjeta-coordinador {
+            background-color: var(--card-bg); 
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--uvmRed);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tarjeta-coordinador:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+            border-color: rgba(227, 6, 19, 0.3);
+        }
+
+        /* Badges de estado con diseño más estético */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .disponible { background-color: rgba(40, 167, 69, 0.15); color: #2ecc71; border: 1px solid rgba(40, 167, 69, 0.3); }
+        .ocupado { background-color: rgba(253, 126, 20, 0.15); color: #f39c12; border: 1px solid rgba(253, 126, 20, 0.3); }
+        .no-disponible { background-color: rgba(220, 53, 69, 0.15); color: #e74c3c; border: 1px solid rgba(220, 53, 69, 0.3); }
+
+        /* Estilos base de inputs reseteados para Tailwind */
+        input:focus, select:focus {
+            border-color: var(--uvmRed) !important;
+            box-shadow: 0 0 0 2px rgba(227, 6, 19, 0.2);
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- Encabezado ZONA UVM (Intacto) -->
+    <header class="glass-header-nav">
+        <nav class="nav-container">
+            <!-- Izquierda -->
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
+
+            <!-- Centro -->
+            <a href="#" class="header-logo-small">
+                ZONA<span>UVM</span>
+            </a>
+
+            <!-- Derecha -->
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle-nav" class="text-xl focus:outline-none">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="user-avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Contenedor Principal (Aplica el layout aesthetic que pediste) -->
+    <main class="max-w-6xl mx-auto p-4 md:p-8">
+        
+        <!-- Título centrado y estético -->
+        <div class="flex justify-center items-center text-center mb-8 md:mb-12 border-b border-[var(--border-color)] pb-4">
+            <h1 class="text-3xl md:text-3xl font-black text-[#E30613] tracking-tighter italic uppercase">
+                DIRECTORIO DE COORDINACIONES
+            </h1>
+        </div>
+
+        <!-- Sección de Formulario Estilizada -->
+        <section id="seccion-reporte" class="max-w-2xl mx-auto mb-16 p-6 md:p-8 rounded-2xl shadow-lg border" style="background-color: var(--card-bg); border-color: var(--border-color);">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <i class="fas fa-sliders-h text-1xl text-[#E30613]"></i>
+                <h2 class="text-xl md:text-1xl font-bold text-[#E30613]">Actualizar Estatus</h2>
+            </div>
+            
+            <form id="formulario-estatus" class="space-y-5">
+                <div>
+                    <label class="block mb-2 text-xs font-bold tracking-widest uppercase opacity-70">Seleccionar Coordinador:</label>
+                    <select id="select-coordi" required class="w-full p-3.5 rounded-xl outline-none transition-all duration-300 appearance-none cursor-pointer font-medium" style="background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-color);"></select>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-xs font-bold tracking-widest uppercase opacity-70">Nuevo Estatus:</label>
+                    <select id="select-estatus" required class="w-full p-3.5 rounded-xl outline-none transition-all duration-300 appearance-none cursor-pointer font-medium" style="background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-color);">
+                        <option value="disponible"> Disponible</option>
+                        <option value="ocupado"> Ocupado</option>
+                        <option value="no-disponible"> No Disponible</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-xs font-bold tracking-widest uppercase opacity-70">Comentario de Estatus:</label>
+                    <input type="text" id="input-comentario" placeholder="Ej. En junta con alumnos, hora de comida..." class="w-full p-3.5 rounded-xl outline-none transition-all duration-300 font-medium" style="background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-color);">
+                </div>
+
+                <button type="submit" class="w-full mt-4 py-4 rounded-xl font-black uppercase tracking-widest text-white transition-transform transform hover:-translate-y-1" style="background: var(--uvmRed); box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);">
+                    Actualizar Estatus Ahora
+                </button>
+            </form>
+        </section>
+
+        <!-- Grid del Directorio -->
+        <div id="contenedor-directorio" class="directorio-grid"></div>
+
+    </main>
+
+    <!-- FOOTER SOLICITADO -->
+    <footer class="border-t border-gray-200 dark:border-uvmBorder py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-uvmGray text-sm font-sans">
+            <div class="mb-4 md:mb-0 font-medium">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+    
+        </div>
+    </footer>
+
+    <script>
+        // --- Lógica del Directorio (Intacta, sólo se mejoró el HTML inyectado) ---
+
+        const coordinadoresIniciales = [
+            { id: 1, nombre: "Manuel Alonso Olvera", coordinacion: "Arquitectura y Artes", correo: "Manuel.alonso@uvmnet.edu", ubicacion: "Oficinas de Arquitectura", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 2, nombre: "Edurne Ortega Silva", coordinacion: "Derecho y Negocios", correo: "luisa.ortega@uvmnet.edu", ubicacion: "Oficinas de Derecho", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 3, nombre: "César Espino Martinez", coordinacion: "Ingenierías", correo: "cesar.espinom@uvmnet.edu", ubicacion: "Edificio de Ingenierías", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 4, nombre: "Claudia Marisol Sánchez Murillo", coordinacion: "Gastronomía y Hospitalidad", correo: "claudia.sanchezm@uvmnet.edu", ubicacion: "Talleres de Cocina", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 5, nombre: "Miguel Ventura Ramírez", coordinacion: "Comunicación y Negocios", correo: "miguel.ventura@uvmnet.edu", ubicacion: "Oficinas de Negocios", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 6, nombre: "Carlos Sampieri Jimenez", coordinacion: "Salud y Programas LX", correo: "carlos.sampieri@uvmnet.edu", ubicacion: "Clínicas / Salud", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 7, nombre: "Maritza Cárdenas Navarro", coordinacion: "Ambientes Virtuales", correo: "maritza.cardenas@uvmnet.edu", ubicacion: "En línea", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" },
+            { id: 8, nombre: "Cristina Hernández", coordinacion: "Idiomas", correo: "cristina.hernandezf@uvmnet.edu", ubicacion: "Edificio Central", infoHorario: "Se encuentra disponible a partir de las 10:00AM a 7:00PM" }
+        ];
+
+        let coordinadores = JSON.parse(localStorage.getItem('datosUVM_Sprint2')) || coordinadoresIniciales.map(c => ({
+            ...c,
+            estatus: "no-disponible",
+            ultimaVez: "Sin registro",
+            comentario: c.infoHorario
+        }));
+
+        const contenedor = document.getElementById('contenedor-directorio');
+        const selectCoordi = document.getElementById('select-coordi');
+        const formulario = document.getElementById('formulario-estatus');
+
+        function aplicarHorarioAutomatico() {
+            const ahora = new Date();
+            const hora = ahora.getHours();
+            const esLaboral = hora >= 10 && hora < 19;
+
+            coordinadores.forEach(c => {
+                if (c.ultimaVez === "Sin registro" || c.comentario === "Horario laboral iniciado" || c.comentario === "Fuera de horario (Disponible 10AM-7PM)") {
+                    c.estatus = esLaboral ? "disponible" : "no-disponible";
+                    c.comentario = esLaboral ? "Horario laboral iniciado" : "Fuera de horario (Disponible 10AM-7PM)";
+                }
+            });
+        }
+
+        function renderizarTarjetas() {
+            contenedor.innerHTML = ""; 
+            selectCoordi.innerHTML = ""; 
+
+            const opcionVacia = document.createElement('option');
+            opcionVacia.value = "";
+            opcionVacia.textContent = "-- Selecciona un coordinador --";
+            opcionVacia.disabled = true;
+            opcionVacia.selected = true;
+            selectCoordi.appendChild(opcionVacia);
+
+            coordinadores.forEach(coord => {
+                const option = document.createElement('option');
+                option.value = coord.id;
+                option.textContent = coord.nombre;
+                selectCoordi.appendChild(option);
+
+                const tarjeta = document.createElement('div');
+                tarjeta.classList.add('tarjeta-coordinador');
+                
+                // Diseño de tarjeta mejorado con Tailwind pero respetando el CSS principal
+                tarjeta.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-black tracking-tight w-2/3" style="color: var(--uvmRed);">${coord.coordinacion}</h3>
+                        <div class="status-badge ${coord.estatus}">${coord.estatus.replace('-', ' ')}</div>
+                    </div>
+                    
+                    <div class="flex-grow space-y-2 mb-4">
+                        <p class="font-bold text-[15px]"><i class="fas fa-user-tie mr-2 opacity-60"></i> ${coord.nombre}</p>
+                        <p class="text-sm italic opacity-80 pl-6 border-l-2 border-[var(--border-color)]">"${coord.comentario}"</p>
+                    </div>
+
+                    <p class="text-[11px] opacity-50 mb-3 font-semibold uppercase tracking-wider"><i class="far fa-clock mr-1"></i> Actualizado: ${coord.ultimaVez}</p>
+                    
+                    <hr class="border-t border-[var(--border-color)] mb-4">
+                    
+                    <div class="space-y-3 text-sm">
+                        <p class="flex items-start gap-2"><i class="fas fa-map-marker-alt mt-1 opacity-60"></i> <span>${coord.ubicacion}</span></p>
+                        <p class="flex items-start gap-2"><i class="fas fa-envelope mt-1 opacity-60"></i> <a href="mailto:${coord.correo}" class="font-bold hover:underline transition-all" style="color: var(--uvmRed); word-break: break-all;">${coord.correo}</a></p>
+                    </div>
+                `;
+                contenedor.appendChild(tarjeta);
+            });
+        }
+
+        formulario.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!selectCoordi.value) {
+                alert("Por favor selecciona un coordinador primero.");
+                return;
+            }
+            const idSeleccionado = parseInt(selectCoordi.value);
+            const nuevoEstatus = document.getElementById('select-estatus').value;
+            const nuevoComentario = document.getElementById('input-comentario').value;
+            const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const indice = coordinadores.findIndex(c => c.id === idSeleccionado);
+            if (indice !== -1) {
+                coordinadores[indice].estatus = nuevoEstatus;
+                coordinadores[indice].comentario = nuevoComentario || "Actualización manual";
+                coordinadores[indice].ultimaVez = horaActual;
+                localStorage.setItem('datosUVM_Sprint2', JSON.stringify(coordinadores));
+            }
+            renderizarTarjetas(); 
+            formulario.reset();   
+            selectCoordi.selectedIndex = 0; 
+        });
+
+        // Inicialización (Intacta)
+        aplicarHorarioAutomatico();
+        renderizarTarjetas();
+
+        // --- Lógica de Tema ZONA UVM (Intacta e interoperable con Tailwind) ---
+        const themeToggle = document.getElementById('theme-toggle-nav');
+        const body = document.body;
+        const html = document.documentElement; // Agregado para Tailwind Dark Mode
+
+        // Comprobar preferencia guardada
+        if (localStorage.getItem('theme-uvm') === 'light') {
+            body.classList.add('light-mode');
+            html.classList.remove('dark'); // Sincroniza con Tailwind (Claro)
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            html.classList.toggle('dark'); // Sincroniza con Tailwind
+            
+            if (body.classList.contains('light-mode')) {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme-uvm', 'light');
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme-uvm', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>

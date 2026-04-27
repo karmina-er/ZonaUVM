@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZONA UVM - Registro de Horarios</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              uvmRed: '#E30613',
+              uvmDark: '#0A0A0A',
+              uvmBorder: '#333333',
+              uvmGray: '#A0A0A0'
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        :root {
+            --uvmRed: #E30613;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --border-color: #333333;
+            --header-bg: rgba(10, 10, 10, 0.85);
+            --card-bg: #1A1A1A;
+            --input-bg: #0A0A0A;
+            --transition: all 0.3s ease;
+        }
+        body.light-mode {
+            --bg-color: #F3F4F6;
+            --text-color: #111827;
+            --border-color: #E5E7EB;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: #FFFFFF;
+            --input-bg: #F9FAFB;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main { flex: 1; }
+
+        .glass-header-nav {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 1rem 1.5rem;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-button {
+            display: flex; align-items: center; gap: 10px;
+            color: var(--text-color); text-decoration: none;
+            font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            transition: var(--transition);
+            padding: 8px 16px; border-radius: 8px;
+            background: rgba(128, 128, 128, 0.1);
+        }
+        .back-button:hover {
+            background: rgba(227, 6, 19, 0.1);
+            color: var(--uvmRed);
+            transform: translateX(-5px);
+        }
+        .header-logo-small {
+            font-weight: 800; font-size: 1.2rem;
+            letter-spacing: -1px; color: var(--text-color);
+            text-decoration: none;
+        }
+        .header-logo-small span { color: var(--uvmRed); }
+        .theme-toggle-nav {
+            background: none; border: none;
+            color: var(--text-color); cursor: pointer;
+            font-size: 1.1rem; padding: 8px; margin-right: 10px;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .uvm-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+        .uvm-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .uvm-input:focus { border-color: var(--uvmRed); outline: none; }
+        optgroup { background-color: var(--card-bg); color: var(--uvmRed); font-weight: bold; }
+        option { background-color: var(--bg-color); color: var(--text-color); }
+
+        .uvm-btn-red {
+            background-color: var(--uvmRed);
+            color: white; padding: 0.75rem;
+            border-radius: 0.75rem; font-weight: 800;
+            width: 100%; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; border: none;
+        }
+        .uvm-btn-red:hover {
+            background-color: #ff0818;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(227, 6, 19, 0.4);
+        }
+
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: 50px repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+            padding: 12px;
+            border-radius: 20px;
+            overflow-x: auto;
+        }
+        .dia-col {
+            text-align: center; font-size: 10px;
+            color: var(--uvmRed); font-weight: 900;
+            padding-bottom: 12px; text-transform: uppercase;
+        }
+        .clase-slot {
+            background: var(--bg-color); min-height: 60px;
+            padding: 4px; position: relative;
+            border: 0.1px solid var(--border-color);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .clase-active {
+            background: var(--uvmRed); color: white; z-index: 10;
+        }
+        .clase-inicio { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+        .clase-fin { border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+        .materia-texto { font-weight: 900; text-transform: uppercase; font-size: 8px; text-align: center; line-height: 1; }
+        .lugar-texto { font-weight: 900; font-size: 11px; text-align: center; color: #000; background: white; padding: 1px 4px; border-radius: 4px; margin: 2px 0; }
+        .hora-texto { font-weight: 700; font-size: 7px; opacity: 0.9; text-align: center; }
+        .item-agenda {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--uvmRed);
+            transition: var(--transition);
+        }
+
+        .evento-extracurricular {
+            background: linear-gradient(135deg, #FFD700 0%, #b8860b 100%) !important;
+            color: black !important; border: 1px solid #8B6914 !important;
+        }
+        .evento-suspension {
+            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #333 10px, #333 20px) !important;
+            opacity: 0.5; filter: grayscale(1);
+        }
+        .evento-badge {
+            font-size: 7px; font-weight: 900; text-transform: uppercase;
+            padding: 1px 4px; border-radius: 3px;
+            background: rgba(0,0,0,0.3); color: white;
+        }
+
+        .modal-base {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            z-index: 9999; align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+        .modal-base.active { display: flex; }
+        .modal-card {
+            background: #151515; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 2rem; padding: 2.5rem;
+            width: 100%; max-width: 420px;
+            text-align: center; animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .admin-panel {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px dashed rgba(255, 215, 0, 0.25);
+            border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        .admin-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--uvmRed); color: white;
+            font-size: 10px; font-weight: 900;
+            text-transform: uppercase; padding: 4px 12px;
+            border-radius: 20px; letter-spacing: 0.5px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px; border-radius: 12px;
+            font-size: 11px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03); color: #666;
+            cursor: pointer;
+        }
+        .filter-btn:hover { background: rgba(255,255,255,0.08); color: white; }
+        .filter-btn.active-all { background: white !important; color: black !important; }
+        .filter-btn.active-classes { background: #E30613 !important; color: white !important; }
+        .filter-btn.active-events { background: #FFD700 !important; color: black !important; }
+    </style>
+</head>
+<body>
+
+    <header class="glass-header-nav">
+        <div class="nav-container">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
+            <a href="#" class="header-logo-small">ZONA<span>UVM</span></a>
+            <div style="display: flex; align-items: center;">
+                <button id="theme-toggle-nav" class="theme-toggle-nav" title="Cambiar tema">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <div id="btnAdmin" onclick="toggleAdmin()" 
+                     style="width: 32px; height: 32px; background: var(--uvmRed); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+                     title="Acceso Administrador">
+                    <i class="fas fa-user-graduate" style="font-size: 0.8rem; color: white;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="max-w-6xl mx-auto p-4 md:p-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h1 class="text-3xl font-black text-[#E30613] tracking-tighter italic">HORARIO</h1>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="setVista('all')" id="f-all" class="filter-btn active-all">Todo</button>
+                    <button onclick="setVista('classes')" id="f-classes" class="filter-btn">Solo Clases</button>
+                    <button onclick="setVista('events')" id="f-events" class="filter-btn">Solo Eventos</button>
+                </div>
+            </div>
+
+            <div id="adminIndicator" class="hidden mb-4">
+                <div class="admin-badge"><i class="fa-solid fa-shield-halved"></i> Modo Admin Activo</div>
+            </div>
+
+            <div id="adminPanel" class="admin-panel hidden">
+                <h3 class="text-yellow-500 font-black text-xs mb-4 tracking-widest uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-plus"></i> Publicar Evento / Aviso
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                    <input type="text" id="evNombre" class="uvm-input" placeholder="Nombre del evento" style="margin-top:0;">
+                    <select id="evTipo" class="uvm-input" style="margin-top:0;">
+                        <option value="extra">Evento Extracurricular</option>
+                        <option value="suspension">Suspensión de Clases</option>
+                    </select>
+                    <select id="evDia" class="uvm-input" style="margin-top:0;">
+                        <option value="1">Lunes</option>
+                        <option value="2">Martes</option>
+                        <option value="3">Miércoles</option>
+                        <option value="4">Jueves</option>
+                        <option value="5">Viernes</option>
+                        <option value="6">Sábado</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <input type="time" id="evInicio" class="uvm-input" style="margin-top:0;">
+                        <input type="time" id="evFin" class="uvm-input" style="margin-top:0;">
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="guardarEvento()" class="uvm-btn-red" style="width:auto; padding: 0.6rem 2rem; font-size: 11px;">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>Publicar
+                    </button>
+                    <button onclick="logoutAdmin()" class="text-red-400 text-xs font-bold uppercase hover:text-red-300 transition">
+                        Cerrar sesión
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-1">
+                    <div class="uvm-card p-6 sticky top-24">
+                        <h2 class="text-xs font-black uppercase mb-4 text-gray-400 flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-[#E30613]"></i> Nueva Clase
+                        </h2>
+                        <div class="space-y-4">
+                            <input type="text" id="materia" class="uvm-input" placeholder="Materia">
+                            <select id="lugar" class="uvm-input">
+                                <optgroup label="Edificio S">
+                                    <option value="S-A1">S-A1</option>
+                                    <option value="S-A2">S-A2</option>
+                                    <option value="S-A3">S-A3</option>
+                                    <option value="S-A4">S-A4</option>
+                                    <option value="S-B1">S-B1</option>
+                                    <option value="S-C1">S-C1</option>
+                                </optgroup>
+                                <optgroup label="Áreas Comunes">
+                                    <option value="Ingeniería">Ingeniería</option>
+                                    <option value="Laboratorios">Laboratorios</option>
+                                    <option value="Auditorio">Auditorio</option>
+                                </optgroup>
+                            </select>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="time" id="entrada" class="uvm-input">
+                                <input type="time" id="salida" class="uvm-input">
+                            </div>
+                            <select id="dia" class="uvm-input">
+                                <option value="0">Domingo</option>
+                                <option value="1">Lunes</option>
+                                <option value="2">Martes</option>
+                                <option value="3">Miércoles</option>
+                                <option value="4">Jueves</option>
+                                <option value="5">Viernes</option>
+                                <option value="6">Sábado</option>
+                            </select>
+                            <button onclick="agregar()" class="uvm-btn-red">Guardar Agenda</button>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-700">
+                            <h2 class="text-xs font-black uppercase mb-4 text-gray-400 flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-check text-[#FFD700]"></i> Eventos
+                            </h2>
+                            <div id="listaEventosSidebar" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="uvm-card p-4">
+                        <div class="calendario-grid" id="grid-visual"></div>
+                    </div>
+                    <div id="lista-horarios" class="space-y-3"></div>
+                    <div id="listaEventosPublica" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-300 dark:border-[#333333] py-12 px-6 bg-white dark:bg-transparent transition-colors duration-300 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-[#A0A0A0] text-sm font-sans">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 ZONA UVM. Campus Guadalajara Sur.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Login Admin -->
+    <div id="modalLogin" class="modal-base">
+        <div class="modal-card">
+            <div class="w-20 h-20 bg-gradient-to-tr from-red-600 to-red-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-red-600/20 rotate-3">
+                <i class="fa-solid fa-fingerprint text-3xl text-white"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white mb-2 italic tracking-tighter uppercase">Admin Lince</h2>
+            <p class="text-[#A0A0A0] text-xs mb-8 uppercase tracking-widest font-bold opacity-50">Ingresa la llave de acceso</p>
+            <input type="password" id="adminPass" class="uvm-input mb-4 text-center text-lg tracking-[0.5em]" placeholder="••••" style="margin-top:0;">
+            <button onclick="verificarLogin()" class="w-full bg-white text-black font-extrabold py-4 rounded-2xl hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105">AUTENTICAR</button>
+            <button onclick="cerrarLogin()" class="mt-6 text-gray-600 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== ESTADO GLOBAL ==========
+        let agenda = JSON.parse(localStorage.getItem('agendaUVM')) || [];
+        let eventos = JSON.parse(localStorage.getItem('eventosUVM')) || [];
+        let isAdmin = false;
+        let vistaActual = 'all';
+        const diasSemana = ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];
+        const diasFull = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+        // ========== INICIALIZACIÓN ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeBtn = document.getElementById('theme-toggle-nav');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    const isLight = document.body.classList.contains('light-mode');
+                    themeBtn.querySelector('i').className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                    document.documentElement.classList.toggle('dark', !isLight);
+                });
+            }
+            actualizarTodo();
+        });
+
+        // ========== CLASES ==========
+        function agregar() {
+            const materia = document.getElementById('materia').value;
+            const lugar = document.getElementById('lugar').value;
+            const entrada = document.getElementById('entrada').value;
+            const salida = document.getElementById('salida').value;
+            const dia = document.getElementById('dia').value;
+
+            if (!materia || !entrada || !salida) return alert('Llena los datos, lince');
+
+            agenda.push({ id: Date.now(), materia, lugar, entrada, salida, dia: parseInt(dia) });
+            actualizarTodo();
+            document.getElementById('materia').value = '';
+        }
+
+        function borrarClase(id) {
+            if (confirm('¿Eliminar esta clase?')) {
+                agenda = agenda.filter(i => i.id !== id);
+                actualizarTodo();
+            }
+        }
+
+        // ========== ADMIN / LOGIN ==========
+        function toggleAdmin() {
+            if (isAdmin) {
+                document.getElementById('adminPanel').classList.toggle('hidden');
+            } else {
+                document.getElementById('modalLogin').classList.add('active');
+            }
+        }
+
+        function cerrarLogin() {
+            document.getElementById('modalLogin').classList.remove('active');
+            document.getElementById('adminPass').value = '';
+        }
+
+        function verificarLogin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === 'admin123') {
+                isAdmin = true;
+                document.getElementById('modalLogin').classList.remove('active');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('adminIndicator').classList.remove('hidden');
+                document.getElementById('btnAdmin').style.boxShadow = '0 0 0 3px #FFD700';
+                document.getElementById('adminPass').value = '';
+                actualizarTodo();
+                alert('Acceso Administrador concedido.');
+            } else {
+                alert('Clave incorrecta.');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('adminIndicator').classList.add('hidden');
+            document.getElementById('btnAdmin').style.boxShadow = 'none';
+            actualizarTodo();
+        }
+
+        // ========== EVENTOS (ADMIN ONLY) ==========
+        function guardarEvento() {
+            if (!isAdmin) return alert('Debes iniciar sesión como administrador.');
+
+            const nombre = document.getElementById('evNombre').value;
+            const tipo = document.getElementById('evTipo').value;
+            const dia = document.getElementById('evDia').value;
+            const inicio = document.getElementById('evInicio').value;
+            const fin = document.getElementById('evFin').value;
+
+            if (!nombre || !inicio) return alert('Completa nombre e inicio del evento.');
+
+            eventos.push({
+                id: Date.now(),
+                nombre,
+                tipo,
+                dia: parseInt(dia),
+                inicio,
+                fin
+            });
+            localStorage.setItem('eventosUVM', JSON.stringify(eventos));
+            document.getElementById('evNombre').value = '';
+            actualizarTodo();
+        }
+
+        function borrarEvento(id) {
+            if (!isAdmin) return alert('Solo admin puede eliminar eventos.');
+            if (confirm('¿Eliminar este evento?')) {
+                eventos = eventos.filter(e => e.id !== id);
+                localStorage.setItem('eventosUVM', JSON.stringify(eventos));
+                actualizarTodo();
+            }
+        }
+
+        // ========== VISTAS ==========
+        function setVista(v) {
+            vistaActual = v;
+            ['all','classes','events'].forEach(x => {
+                const btn = document.getElementById('f-' + x);
+                btn.className = 'filter-btn' + (x === v ? ' active-' + x : '');
+            });
+            actualizarTodo();
+        }
+
+        // ========== RENDER ==========
+        function actualizarTodo() {
+            localStorage.setItem('agendaUVM', JSON.stringify(agenda));
+            renderLista();
+            renderCalendario();
+            renderEventosSidebar();
+            renderEventosPublica();
+        }
+
+        function renderLista() {
+            const lista = document.getElementById('lista-horarios');
+            lista.innerHTML = agenda.map(i => `
+                <div class="item-agenda p-4 rounded-xl flex justify-between items-center mb-2 shadow-sm">
+                    <div>
+                        <h4 class="text-xs font-black uppercase">${i.materia}</h4>
+                        <p class="text-[9px] opacity-70 font-bold">${diasSemana[i.dia]} | ${i.lugar} | ${i.entrada}-${i.salida}</p>
+                    </div>
+                    <button onclick="borrarClase(${i.id})" class="text-gray-400 hover:text-red-500 transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>`).join('');
+        }
+
+        function renderCalendario() {
+            const grid = document.getElementById('grid-visual');
+            if (!grid) return;
+            
+            let html = '<div class="dia-col">Hora</div>' + diasSemana.map(d => `<div class="dia-col">${d}</div>`).join('');
+            
+            for (let h = 7; h <= 21; h++) {
+                html += `<div class="text-[9px] opacity-40 font-black flex items-center justify-end pr-2 border-r border-gray-500/20">${h}:00</div>`;
+                for (let d = 0; d <= 6; d++) {
+                    const clase = (vistaActual === 'all' || vistaActual === 'classes') ?
+                        agenda.find(c => {
+                            const he = parseInt(c.entrada.split(':')[0]);
+                            const hs = parseInt(c.salida.split(':')[0]);
+                            return c.dia === d && h >= he && h < hs;
+                        }) : null;
+
+                    const ev = (vistaActual === 'all' || vistaActual === 'events') ?
+                        eventos.find(e => e.dia === d && h >= parseInt(e.inicio.split(':')[0]) && h < parseInt(e.fin.split(':')[0])) : null;
+
+                    let slotClass = 'clase-slot ';
+                    let content = '';
+
+                    if (ev) {
+                        if (ev.tipo === 'suspension') {
+                            slotClass += 'evento-suspension ';
+                            if (h === parseInt(ev.inicio.split(':')[0])) {
+                                content = `<div class="evento-badge bg-red-600">SUSPENSIÓN</div><div class="text-[7px] font-bold text-white mt-1">${ev.nombre}</div>`;
+                            }
+                        } else {
+                            slotClass += 'evento-extracurricular ';
+                            if (h === parseInt(ev.inicio.split(':')[0])) {
+                                content = `<div class="font-black text-[8px] uppercase text-black">${ev.nombre}</div>`;
+                            }
+                        }
+                    }
+
+                    if (clase && (!ev || ev.tipo !== 'suspension')) {
+                        slotClass += 'clase-active ';
+                        const he = parseInt(clase.entrada.split(':')[0]);
+                        const hs = parseInt(clase.salida.split(':')[0]);
+                        if (h === he) {
+                            if (h === he) slotClass += 'clase-inicio ';
+                            if (h === hs - 1) slotClass += 'clase-fin ';
+                            content = `<div class="materia-texto">${clase.materia}</div>
+                                       <div class="lugar-texto">${clase.lugar}</div>
+                                       <div class="hora-texto">${clase.entrada}-${clase.salida}</div>`;
+                        }
+                    }
+
+                    html += `<div class="${slotClass}">${content}</div>`;
+                }
+            }
+            grid.innerHTML = html;
+        }
+
+        function renderEventosSidebar() {
+            const cont = document.getElementById('listaEventosSidebar');
+            if (!cont) return;
+            if (eventos.length === 0) {
+                cont.innerHTML = '<p class="text-[9px] text-gray-500">Sin eventos publicados</p>';
+                return;
+            }
+            cont.innerHTML = eventos.map(e => `
+                <div class="bg-white/5 p-3 rounded-lg border-l-2 ${e.tipo === 'suspension' ? 'border-red-600' : 'border-yellow-500'} flex justify-between items-start gap-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] font-black ${e.tipo === 'suspension' ? 'text-red-500' : 'text-yellow-500'} truncate">${e.nombre}</p>
+                        <p class="text-[8px] text-gray-400">${diasFull[e.dia]} | ${e.inicio} - ${e.fin}</p>
+                    </div>
+                    ${isAdmin ? `<button onclick="borrarEvento(${e.id})" class="text-red-500/40 hover:text-red-500 transition flex-shrink-0 p-1"><i class="fa-solid fa-trash-can text-xs"></i></button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderEventosPublica() {
+            const cont = document.getElementById('listaEventosPublica');
+            if (!cont) return;
+            if (eventos.length === 0) {
+                cont.innerHTML = '';
+                return;
+            }
+            cont.innerHTML = eventos.map(e => `
+                <div class="bg-white/5 p-4 rounded-2xl border-l-4 ${e.tipo === 'suspension' ? 'border-red-600' : 'border-yellow-500'}">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[8px] font-black uppercase tracking-widest ${e.tipo === 'suspension' ? 'text-red-500' : 'text-yellow-500'}">
+                                ${e.tipo === 'extra' ? 'Evento Lince' : 'Aviso Oficial'}
+                            </span>
+                            <h4 class="text-white font-bold text-sm mt-1">${e.nombre}</h4>
+                            <p class="text-[#A0A0A0] text-[10px] mt-2 italic">${diasFull[e.dia]} | ${e.inicio} - ${e.fin}</p>
+                        </div>
+                        ${isAdmin ? `<button onclick="borrarEvento(${e.id})" class="text-red-500/30 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
