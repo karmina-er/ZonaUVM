@@ -23,13 +23,11 @@ function render() {
 
         // Lógica de cálculo
         if (allCompleted) {
-            // Caso: Todos los parciales llenos
             const isExento = avgNum >= 9.0;
             statusClass = isExento ? 'card-status-pass' : 'card-status-fail';
             inputClass = isExento ? 'border-pass' : 'border-fail';
             mensaje = isExento ? "Felicidades, estás exento" : "Te vas a examen";
         } else if (remaining > 0) {
-            // Caso: Faltan parciales
             const needed = ((9.0 * sub.partials) - sum) / remaining;
             if (needed > 10) {
                 mensaje = "Ya no es posible alcanzar exención";
@@ -71,24 +69,39 @@ function updateGrade(sIdx, pIdx, value) {
 document.addEventListener("DOMContentLoaded", () => {
     // Lógica para alternar temas
     const themeBtn = document.getElementById('theme-toggle-nav');
-    themeBtn.addEventListener('click', () => {
-        // Toggle en body para CSS personalizado
-        document.body.classList.toggle('light-mode');
-        // Toggle en html para Tailwind 'dark:'
-        document.documentElement.classList.toggle('dark');
-        
-        const isLight = document.body.classList.contains('light-mode');
-        themeBtn.querySelector('i').className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-    });
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            document.documentElement.classList.toggle('dark');
+            
+            const isLight = document.body.classList.contains('light-mode');
+            const icon = themeBtn.querySelector('i');
+            if (icon) icon.className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        });
+    }
 
     // Lógica para añadir materia
     const addBtn = document.getElementById('btn-add-subject');
     if(addBtn) {
         addBtn.addEventListener('click', () => {
             const nameInput = document.getElementById('subject-name-input');
+            const partialsInput = document.getElementById('subject-partials-input');
+            
+            // Validaciones
             if (!nameInput.value.trim()) return alert("Ponle nombre a la materia.");
-            subjects.push({ name: nameInput.value.trim(), partials: parseInt(document.getElementById('subject-partials-input').value), grades: Array(parseInt(document.getElementById('subject-partials-input').value)).fill(null) });
+            if (!partialsInput.value) return alert("Selecciona el número de parciales.");
+            
+            const numPartials = parseInt(partialsInput.value);
+            
+            subjects.push({ 
+                name: nameInput.value.trim(), 
+                partials: numPartials, 
+                grades: Array(numPartials).fill(null) 
+            });
+            
+            // Limpieza correcta
             nameInput.value = '';
+            partialsInput.selectedIndex = 0; // <-- Corrección: esto resetea al placeholder correctamente
             save();
         });
     }
