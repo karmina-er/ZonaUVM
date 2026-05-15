@@ -28,7 +28,7 @@ Persistencia Local: Guarda la información del horario en el navegador para que 
 
 Indicadores de Tiempo: Resalta visualmente la clase actual y el tiempo restante de la sesión.
 
-### chatbot_de_consejos.html
+### chatbot_consejos.html
 Interacción en Tiempo Real: Procesa mensajes del usuario y genera respuestas automáticas basadas en consejos académicos y de vida universitaria.
 
 Interfaz de Chat: Sistema de mensajes con burbujas diferenciadas para usuario y bot, incluyendo indicadores de escritura.
