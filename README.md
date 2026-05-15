@@ -45,3 +45,4 @@ Búsqueda Rápida: Implementa filtros para encontrar personal específico por de
 ## Instrucciones de Ejecución
 
 ## Estatus del Proyecto
+El proyecto ZonaUVM se encuentra finalizado y funcional. El sistema cuenta con las funcionalidades propuestas inicialmente y pasó por pruebas de calidad para verificar su correcto funcionamiento.
